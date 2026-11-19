@@ -152,12 +152,13 @@ table.in th{color:var(--tl)}
 <h2>Vimśottarī Daśā</h2><p class="hint">Tap a Mahādaśā to open its Antardaśās.</p><div class="sc"><table id="ds"></table></div><p class="hint" id="ad"></p>
 <h2>Yogas and doshas</h2><div class="cards" id="yg"></div>
 <h2>Chart reading</h2><div class="cards" id="rd"></div>
-<h2>Deeper AI reading</h2>
-<p class="hint">All your chart details (planets, houses, aspects, yogas, Navāṁśa and every daśā) are packed into one request, and an AI writes an easy-to-read report on personality, career, money, relationships, health, the current daśā and remedies. Use Claude here, or open the same request in your own Gemini.</p>
-<p class="btns"><button class="p" id="aib" type="button" hidden>Write my AI reading</button><a class="btn" id="gmb" href="https://gemini.google.com/app" target="_blank" rel="noopener">Analyze with Gemini</a></p>
-<p class="hint" id="gms" role="status">Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.</p>
-<details id="gmd"><summary class="hint">View or copy the full chart request</summary><textarea id="gmt" readonly rows="10" aria-label="Full chart request for AI"></textarea></details>
-<div class="ai" id="air" hidden></div>
+<h2>Basic AI reading</h2>
+<p class="hint">Get a short overview based on your calculated chart.</p>
+<button class="p" id="aib" type="button">Get AI reading</button>
+<p class="hint" id="ai-status" role="status"></p>
+<div class="ai" id="air" hidden aria-live="polite" style="white-space:pre-line"></div>
+<p>For a deeper reading and personalised remedies, contact AstroAnimez.</p>
+<a class="btn" href="#contact">Contact us</a>
 <p class="hint" style="margin-top:28px">Positions use a compact low-precision ephemeris (typically within a few arc-minutes for planets, up to about 0.3° for the Moon), mean lunar node and whole-sign houses. Readings are traditional interpretations for reflection, not predictions or professional advice.</p>
 </div>
 </main>
@@ -291,18 +292,27 @@ o.push(`<div class="c"><b>Lagna: ${SG[c.ls]}</b><br>You come across as ${LAG[c.l
 o.push(`<div class="c"><b>Moon: ${SG[g.Mo.s]}, ${NK[g.Mo.nk]}</b><br>Emotionally, you ${MOT[g.Mo.s]}. The Moon in house ${g.Mo.h} puts your peace of mind in the area of ${HT[g.Mo.h-1]}.</div>`);
 ["Su","Ma","Me","Ju","Ve","Sa"].forEach(k=>{const p=g[k],q=dg(k,p.s);o.push(`<div class="c"><b>${PN[k]} in house ${p.h}</b> (${SG[p.s]}${q?", "+q:""}${p.rt?", retrograde":""})<br>${PN[k]} governs ${SIG[k]}. Here it works through ${HT[p.h-1]}${q=="exalted"||q=="in own sign"?" with strength and ease":q=="debilitated"?", asking for extra effort and maturity":""}${p.rt?"; retrograde turns this energy inward and slows its results":""}.</div>`)});
 o.push(`<div class="c"><b>Rahu in house ${g.Ra.h}, Ketu in house ${g.Ke.h}</b><br>Rahu pulls you toward ${HT[g.Ra.h-1]} with hunger for more; Ketu in ${HT[g.Ke.h-1]} points to detachment and past-life mastery.</div>`);return o.join("")}
-const PROMPT=`You are an experienced, kind Vedic astrologer (Jyotish). Using ONLY the computed chart data below (sidereal zodiac, Lahiri ayanamsa, whole-sign houses), write a deep but easy-to-understand report for a complete beginner. Use simple everyday English; if you must use a Sanskrit term, explain it in brackets right away. Use short paragraphs and these ## headings: Quick summary (5 lines), Personality and nature, Career and money, Love, marriage and family, Health and wellbeing, Education and children, Strengths and challenges (explain each yoga simply), Current Mahadasha and Antardasha (what to expect now and over the next 2 to 3 years), Upcoming dasha periods at a glance, Simple remedies and practical advice. Refer to the actual placements and house numbers. Stay warm and balanced: no fear-based or absolute predictions, and no medical, legal or financial instructions. Finish with one short line noting that astrology is for reflection.\n\nCHART DATA\n`;
 const sgn=i=>SG[i].replace(/^\S+ /,"");
-function fullData(nameV,c,D,dd){const g=c.g,L=[],el=(g.Mo.l-g.Su.l+360)%360,ti=Math.floor(el/12);
-L.push(`Name: ${nameV||"not given"}`,`Birth: ${dd[0]}-${String(dd[1]+1).padStart(2,"0")}-${String(dd[2]).padStart(2,"0")} at ${$("tm").value}, place ${$("pl").value||"custom coordinates"} (lat ${$("la").value}, lon ${$("lo").value}, UTC offset ${$("tz").value})`,`Today: ${new Date().toDateString()}`,"",`Lagna (Ascendant): ${sgn(c.ls)} ${dm(g.As)}, nakshatra ${NK[g.As.nk]} pada ${g.As.pd}`,`Moon sign: ${sgn(g.Mo.s)}; birth nakshatra ${NK[g.Mo.nk]} pada ${g.Mo.pd}`,`Moon phase: ${ti<15?"Shukla":"Krishna"} paksha, tithi ${ti%15==14?(ti<15?"Purnima":"Amavasya"):TI[ti%15]}; weekday ${VA[new Date(Date.UTC(...dd)).getUTCDay()]}`,"","PLANETS (D1 sign, degree, house, nakshatra, dignity, Navamsa):");
-PK.forEach(k=>{const p=g[k],q=dg(k,p.s);L.push(`- ${PLN[k]}: ${sgn(p.s)} ${dm(p)}, house ${p.h}, ${NK[p.nk]} pada ${p.pd}${q?", "+q:""}${p.rt&&k!="Ra"&&k!="Ke"?", retrograde":""}; Navamsa sign ${sgn(p.n9)}, Navamsa house ${hOf(c,9,k)}`)});
-L.push("","HOUSES:");
-for(let h=1;h<=12;h++){const i=(c.ls+h-1)%12,ld=SIGL[i],occ=PK.filter(k=>g[k].s===i).map(k=>PLN[k]),asp=PK.filter(k=>{const ph=g[k].h;return ph!==h&&(ASP[k]||[7]).includes((h-ph+12)%12+1)}).map(k=>PLN[k]);L.push(`- House ${h} (${HB[h-1]}: ${HE[h-1]}): ${sgn(i)}, lord ${PLN[ld]} sits in house ${g[ld].h} (${sgn(g[ld].s)}); planets here: ${occ.join(", ")||"none"}; aspected by: ${asp.join(", ")||"none"}`)}
-L.push("","YOGAS AND DOSHAS:");yogas(c).forEach(([a,b])=>L.push(`- ${a}: ${b}`));
-L.push("","VIMSHOTTARI DASHA (Mahadasha sequence):");D.L.forEach(x=>L.push(`- ${PLN[x.k]} ${fmt(x.a)} to ${fmt(x.b)}${x===D.cur?" (RUNNING NOW)":""}`));
-if(D.cur){L.push("",`Antardashas inside the running ${PLN[D.cur.k]} Mahadasha:`);const n=Date.now();anta(D.cur).forEach(a=>L.push(`- ${PLN[D.cur.k]}-${PLN[a.k]}: ${fmtD(a.a)} to ${fmtD(a.b)}${n>=a.a&&n<a.b?" (RUNNING NOW)":""}`))}
-return L.join("\n")}
-function render(nameV,c,dd){const g=c.g;INFO=SG[c.ls]+" Lagna";C=c;SEL=-1;draw();
+function aiChartData(c,D) {
+  const g=c.g;
+  const lines=[
+    `Ascendant: ${sgn(c.ls)} ${dm(g.As)}. Navamsa ascendant: ${sgn(g.As.n9)}.`,
+    `Moon: ${sgn(g.Mo.s)}, ${NK[g.Mo.nk]} nakshatra, pada ${g.Mo.pd}.`,
+    "Planet placements (D1 and D9):"
+  ];
+  for (const k of PK) {
+    const p=g[k];
+    const dignity=dg(k,p.s);
+    lines.push(`${PLN[k]}: ${sgn(p.s)} ${dm(p)}, house ${p.h}, ${NK[p.nk]}, pada ${p.pd}${dignity?", "+dignity:""}${p.rt&&k!="Ra"&&k!="Ke"?", retrograde":""}. D9: ${sgn(p.n9)}, house ${hOf(c,9,k)}.`);
+  }
+  lines.push("Yogas and doshas: "+yogas(c).map(([name])=>name).join(", ")+".");
+  if (D.cur) {
+    lines.push(`Current Mahadasha: ${PLN[D.cur.k]}, ends ${fmtD(D.cur.b)}.`);
+    if (D.ant) lines.push(`Current Antardasha: ${PLN[D.ant.k]}, ends ${fmtD(D.ant.b)}.`);
+  }
+  return lines.join("\n");
+}
+function render(c,dd){const g=c.g;INFO=SG[c.ls]+" Lagna";C=c;SEL=-1;draw();
 const el=(g.Mo.l-g.Su.l+360)%360,ti=Math.floor(el/12),d0=new Date(c.ms+0);
 $("pn").innerHTML=[["Lagna (Ascendant)",`${SG[c.ls]} ${dm(g.As)}`],["Janma Rashi (Moon sign)",SG[g.Mo.s]],["Janma Nakshatra",`${NK[g.Mo.nk]}, pada ${g.Mo.pd}`],["Tithi",`${ti<15?"Shukla":"Krishna"} ${ti%15==14?(ti<15?"Purnima":"Amavasya"):TI[ti%15]}`],["Vara (weekday)",VA[(new Date(Date.UTC(...dd)).getUTCDay())]],["Ayanamsa (Lahiri)",g.As&&c.ay.toFixed(3)+"°"]].map(([a,b])=>`<div class="c"><span class="hint">${a}</span><br><b>${b}</b></div>`).join("");
 $("tb").innerHTML="<tr><th>Graha<th>Sign<th>Degree<th>Nakshatra<th>House<th>Status</tr>"+["As",...PK].map(k=>{const p=g[k],q=k=="As"?"":dg(k,p.s);return`<tr><td>${k=="As"?"Lagna":PN[k]}<td>${SG[p.s]}<td>${dm(p)}<td>${NK[p.nk]} ${p.pd}<td>${p.h}<td>${[q,p.rt&&k!="Ra"&&k!="Ke"?"retrograde":""].filter(Boolean).join(", ")||"—"}</tr>`}).join("");
@@ -312,23 +322,74 @@ return`<tr class="md${cu?" cur open":""}"><td><button type="button" class="tg" a
 $("ad").textContent=D.cur?`Running now: ${PN[D.cur.k]} mahadasha${D.ant?` with ${PN[D.ant.k]} antardasha until ${fmt(D.ant.b)}`:""}. ${PN[D.cur.k]} stresses ${SIG[D.cur.k]}, shown through house ${g[D.cur.k].h} (${HT[g[D.cur.k].h-1]}).`:"The dasha sequence began before or extends past today’s window.";
 $("yg").innerHTML=yogas(c).map(([a,b])=>`<div class="c"><b>${a}</b><br>${b}</div>`).join("");
 $("rd").innerHTML=reading(c);$("out").style.display="block";
-c.summary={name:nameV,lagna:SG[c.ls],moon:SG[g.Mo.s]+" / "+NK[g.Mo.nk],grahas:PK.map(k=>`${PN[k]}: ${SG[g[k].s]} h${g[k].h} ${NK[g[k].nk]}${dg(k,g[k].s)?" "+dg(k,g[k].s):""}${g[k].rt&&k!="Ra"&&k!="Ke"?" R":""}`),dasha:D.cur?`${D.cur.k}/${D.ant?D.ant.k:""} until ${fmt(D.cur.b)}`:"",yogas:yogas(c).map(y=>y[0])};
-c.full=fullData(nameV,c,D,dd);$("gmt").value=requestText(c);$("gms").textContent="Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.";$("gmd").open=false;reportLanguage=null;$("air").hidden=true;$("out").scrollIntoView({behavior:"smooth",block:"start"})}
+c.aiChart=aiChartData(c,D);
+resetAIReading();
+$("out").scrollIntoView({behavior:"smooth",block:"start"})}
 $("f").addEventListener("submit",e=>{e.preventDefault();$("er").textContent="";
 try{const[y,m,d]=$("dt").value.split("-").map(Number),[H,M]=$("tm").value.split(":").map(Number);
 const c=calc(y,m,d,H,M,+$("tz").value,+$("la").value,+$("lo").value);
-if(Object.values(c.g).some(p=>isNaN(p.l)))throw 0;render($("nm").value.trim(),c,[y,m-1,d])}catch(x){$("er").textContent="Check the date, time and coordinates, then try again."}});
-const md=t=>{let h="",ul=false;esc(t).split("\n").forEach(l=>{l=l.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");if(/^\s*[-*] /.test(l)){if(!ul){h+="<ul>";ul=true}h+="<li>"+l.replace(/^\s*[-*] /,"")+"</li>"}else{if(ul){h+="</ul>";ul=false}h+=/^#{1,4} /.test(l)?"<h3>"+l.replace(/^#+ /,"")+"</h3>":l.trim()?"<p>"+l+"</p>":""}});return h+(ul?"</ul>":"")};
-let SM=null, reportLanguage=null;
-function showAIReport(){ $("air").hidden=reportLanguage!==document.documentElement.lang; }
-(async()=>{try{SM=await claude.use("sample");if(SM)$("aib").hidden=false}catch(e){}})();
-$("aib").onclick=async()=>{if(!C||!SM)return;const b=$("aib"),o=$("air");b.disabled=true;reportLanguage=document.documentElement.lang;showAIReport();o.textContent="Reading your chart…";
-const pr=requestText(C);
-try{await SM(pr,{modelTier:"default",cache:false,onText:({text})=>{o.innerHTML=md(text)}})}catch(e){if(!o.querySelector("p, h3, ul"))o.textContent=e&&e.code=="not_granted"?"Permission was declined, so no AI reading was written.":"The AI reading could not be generated right now. Try again in a moment."}b.disabled=false;b.textContent="Write it again"};
-$("gmb").addEventListener("click",e=>{if(!C||!C.full){e.preventDefault();return}const t=requestText(C),s=$("gms");$("gmt").value=t;const fail=()=>{s.textContent="Could not copy automatically. Open “View or copy the full chart request” below, copy it, then paste it into Gemini.";$("gmd").open=true};
-try{navigator.clipboard.writeText(t).then(()=>{s.textContent="Copied! In the Gemini tab, sign in with your Gmail, paste (Ctrl+V or long-press) and press send."},fail)}catch(x){fail()}});
+if(Object.values(c.g).some(p=>isNaN(p.l)))throw 0;render(c,[y,m-1,d])}catch(x){$("er").textContent="Check the date, time and coordinates, then try again."}});
+let aiRequest=null, reportLanguage=null;
+function resetAIReading() {
+  aiRequest?.abort();
+  aiRequest=null;
+  reportLanguage=null;
+  $("aib").disabled=false;
+  $("ai-status").textContent="";
+  $("air").textContent="";
+  $("air").hidden=true;
+}
+$("aib").onclick=async()=>{
+  if (!C?.aiChart || aiRequest) return;
+  const request=new AbortController();
+  aiRequest=request;
+  const language=document.documentElement.lang;
+  $("aib").disabled=true;
+  $("air").hidden=true;
+  $("ai-status").textContent="Reading your chart…";
+  try {
+    const response=await fetch("/api/ai-reading",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({chart:C.aiChart,language}),
+      signal:request.signal
+    });
+    const result=await response.json().catch(()=>null);
+    if (aiRequest!==request) return;
+    if (!response.ok || typeof result?.reading!=="string") {
+      const messages={
+        401:"Please sign in again to get an AI reading.",
+        429:"Too many reading requests. Please wait and try again.",
+        503:"AI readings are currently unavailable."
+      };
+      throw new Error(messages[response.status] || "The AI reading could not be generated right now. Try again in a moment.");
+    }
+    reportLanguage=language;
+    $("air").textContent=result.reading;
+    $("air").lang=language;
+    $("air").hidden=language!==document.documentElement.lang;
+    $("ai-status").textContent="";
+  } catch (error) {
+    if (aiRequest===request) $("ai-status").textContent=error.message in telugu
+      ? error.message : "The AI reading could not be generated right now. Try again in a moment.";
+  } finally {
+    if (aiRequest===request) {
+      aiRequest=null;
+      $("aib").disabled=false;
+    }
+  }
+};
 
 const telugu = {
+  "Basic AI reading": "ప్రాథమిక AI జాతక విశ్లేషణ",
+  "Get a short overview based on your calculated chart.": "మీ జన్మకుండలి ఆధారంగా సంక్షిప్త విశ్లేషణ పొందండి.",
+  "Get AI reading": "AI విశ్లేషణ పొందండి",
+  "For a deeper reading and personalised remedies, contact AstroAnimez.": "విస్తృత జాతక విశ్లేషణ, మీకు తగిన పరిహారాల కోసం ఆస్ట్రోఅనిమెజ్‌ను సంప్రదించండి.",
+  "Contact us": "మమ్మల్ని సంప్రదించండి",
+  "Please sign in again to get an AI reading.": "AI విశ్లేషణ కోసం మళ్లీ సైన్ ఇన్ చేయండి.",
+  "Too many reading requests. Please wait and try again.": "ఎక్కువ విశ్లేషణలు అభ్యర్థించారు. కొద్దిసేపు ఆగి మళ్లీ ప్రయత్నించండి.",
+  "AI readings are currently unavailable.": "ప్రస్తుతం AI విశ్లేషణ అందుబాటులో లేదు.",
+
   "Sign out": "సైన్ అవుట్",
   "Could not sign out. Please try again.": "సైన్ అవుట్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించండి.",
   "Site navigation": "సైట్ నావిగేషన్",
@@ -363,14 +424,6 @@ const telugu = {
   "Tap a Mahādaśā to open its Antardaśās.": "అంతర్దశలు చూడటానికి మహాదశను ఎంచుకోండి.",
   "Yogas and doshas": "యోగాలు, దోషాలు",
   "Chart reading": "జాతక విశ్లేషణ",
-  "Deeper AI reading": "విస్తృత AI జాతక విశ్లేషణ",
-  "All your chart details (planets, houses, aspects, yogas, Navāṁśa and every daśā) are packed into one request, and an AI writes an easy-to-read report on personality, career, money, relationships, health, the current daśā and remedies. Use Claude here, or open the same request in your own Gemini.": "గ్రహాలు, భావాలు, దృష్టులు, యోగాలు, నవాంశం, అన్ని దశల వివరాలు ఒకే అభ్యర్థనలో ఉంటాయి. వ్యక్తిత్వం, వృత్తి, ధనం, సంబంధాలు, ఆరోగ్యం, ప్రస్తుత దశ, పరిహారాల గురించి AI సులభంగా అర్థమయ్యే నివేదిక రాస్తుంది. ఇక్కడ Claude వాడండి లేదా అదే అభ్యర్థనను Geminiలో తెరవండి.",
-  "Write my AI reading": "నా AI జాతక విశ్లేషణ రాయండి",
-  "Write it again": "మళ్లీ రాయండి",
-  "Analyze with Gemini": "Geminiతో విశ్లేషించండి",
-  "Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.": "Gemini బటన్ నొక్కితే పూర్తి అభ్యర్థన కాపీ అవుతుంది. కొత్త ట్యాబ్‌లో Gemini తెరుచుకుంటుంది. అక్కడ Gmail ఖాతాతో సైన్ ఇన్ చేసి, అభ్యర్థనను పేస్ట్ చేసి పంపండి.",
-  "View or copy the full chart request": "పూర్తి జాతక అభ్యర్థనను చూడండి లేదా కాపీ చేయండి",
-  "Full chart request for AI": "AI కోసం పూర్తి జాతక అభ్యర్థన",
   "Positions use a compact low-precision ephemeris (typically within a few arc-minutes for planets, up to about 0.3° for the Moon), mean lunar node and whole-sign houses. Readings are traditional interpretations for reflection, not predictions or professional advice.": "గ్రహస్థానాలకు పరిమిత ఖచ్చితత్వం గల గణన పట్టికను (గ్రహాలకు సాధారణంగా కొన్ని ఆర్క్ నిమిషాల తేడా, చంద్రునికి సుమారు 0.3° వరకు), సగటు చంద్ర పాత బిందువులను, సంపూర్ణ రాశి భావాలను ఉపయోగిస్తాం. ఇవి ఆత్మపరిశీలన కోసం ఇచ్చే సంప్రదాయ వ్యాఖ్యానాలు మాత్రమే.",
   "South Indian style birth chart": "దక్షిణ భారత శైలి జన్మకుండలి",
   "Your chart appears here": "మీ జన్మకుండలి ఇక్కడ కనిపిస్తుంది",
@@ -387,10 +440,7 @@ const telugu = {
   "Debilitation of": "నీచ గ్రహాలు",
   "Check the date, time and coordinates, then try again.": "తేదీ, సమయం, స్థాన నిర్దేశాంకాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
   "Reading your chart…": "మీ జాతకాన్ని విశ్లేషిస్తున్నాం…",
-  "Permission was declined, so no AI reading was written.": "అనుమతి లభించకపోవడంతో AI జాతక విశ్లేషణ రూపొందలేదు.",
   "The AI reading could not be generated right now. Try again in a moment.": "ప్రస్తుతం AI జాతక విశ్లేషణ రూపొందించలేకపోయాం. కాసేపటి తర్వాత మళ్లీ ప్రయత్నించండి.",
-  "Could not copy automatically. Open “View or copy the full chart request” below, copy it, then paste it into Gemini.": "ఆటోమేటిక్‌గా కాపీ కాలేదు. కింద ఉన్న ‘పూర్తి జాతక అభ్యర్థనను చూడండి లేదా కాపీ చేయండి’ విభాగం తెరిచి, అభ్యర్థనను కాపీ చేసి Geminiలో పేస్ట్ చేయండి.",
-  "Copied! In the Gemini tab, sign in with your Gmail, paste (Ctrl+V or long-press) and press send.": "కాపీ అయింది! Gemini ట్యాబ్‌లో Gmail ఖాతాతో సైన్ ఇన్ చేసి, పేస్ట్ చేసి (Ctrl+V లేదా ఎక్కువసేపు నొక్కి) పంపండి.",
   "Jupiter is in a kendra from the Moon: good reputation, wisdom and lasting support.": "చంద్రుని నుంచి గురువు కేంద్రంలో ఉన్నాడు. మంచి పేరు, వివేకం, దీర్ఘకాలిక మద్దతు సూచితం.",
   "Sun and Mercury share a sign: sharp intellect and skill with ideas.": "రవి, బుధుడు ఒకే రాశిలో ఉన్నారు. పదునైన బుద్ధి, ఆలోచనల్లో నైపుణ్యం సూచితం.",
   "Moon with Mars: enterprise and a drive to earn.": "చంద్రుడు కుజునితో ఉన్నాడు. చొరవ, సంపాదించాలనే తపన సూచితం.",
@@ -746,24 +796,13 @@ function translate(text) {
   return text.replace(terms, term => telugu[term])
     .replace(/\bH(\d+)\b/g, "భావం $1");
 }
-const teluguPrompt = `మీరు అనుభవజ్ఞులైన వేద జ్యోతిష్కులు. దిగువ ఇచ్చిన నిరయణ, లాహిరి, సంపూర్ణ రాశి భావాల జాతక వివరాలను మాత్రమే ఆధారంగా తీసుకోండి. మొత్తం నివేదికను సరళమైన తెలుగులో రాయండి. జ్యోతిష్య పదాలను సులభంగా వివరించండి. చిన్న పేరాలు, ## ఉపశీర్షికలు వాడండి. సారాంశం (5 పంక్తులు), వ్యక్తిత్వం, వృత్తి మరియు ధనం, ప్రేమ మరియు కుటుంబం, ఆరోగ్యం, విద్య మరియు సంతానం, బలాలు మరియు సవాళ్లు (ప్రతి యోగాన్ని వివరించండి), ప్రస్తుత మహాదశ మరియు అంతర్దశ (ఇప్పటి నుంచి 2–3 సంవత్సరాలు), రాబోయే దశలు, సాధారణ పరిహారాలు మరియు ఆచరణాత్మక సూచనలు అనే విభాగాలు చేర్చండి. వాస్తవ గ్రహ స్థానాలు, భావ సంఖ్యలను పేర్కొనండి. భయం కలిగించే లేదా కచ్చితమైన భవిష్యవాణులు, వైద్య, న్యాయ లేదా ఆర్థిక ఆదేశాలు ఇవ్వవద్దు. చివర్లో ఇది ఆత్మపరిశీలన కోసం అని ఒక పంక్తిలో చెప్పండి.\n\nజాతక వివరాలు\n`;
-function requestText(chartData) {
-  if (document.documentElement.lang !== "te") return PROMPT + chartData.full;
-  return teluguPrompt + chartData.full.split("\n").map((line, i) => {
-    if (i === 0 && chartData.summary.name) return "పేరు: " + chartData.summary.name;
-    const place = i === 1 && line.match(/^(.*?, place )(.*)( \(lat .*)$/);
-    return place && place[2] !== "custom coordinates"
-      ? translate(place[1]) + place[2] + translate(place[3])
-      : translate(line);
-  }).join("\n");
-}
 const originalText = new WeakMap();
 const originalAttributes = new WeakMap();
 function updateLanguage() {
   const isTelugu = document.documentElement.lang === "te";
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
     acceptNode(node) {
-      return node.parentElement?.closest("script, style, #lang, #air, #gmt")
+      return node.parentElement?.closest("script, style, #lang, #air")
         ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -784,12 +823,6 @@ function updateLanguage() {
       if (element.getAttribute(name) !== value) element.setAttribute(name, value);
     }
   }
-  if (reportLanguage && $("air").firstChild?.nodeType === Node.TEXT_NODE) {
-    const message = $("air").firstChild;
-    if (!originalText.has(message)) originalText.set(message, message.data);
-    const value = isTelugu ? translate(originalText.get(message)) : originalText.get(message);
-    if (message.data !== value) message.data = value;
-  }
 }
 const baseTitle = document.title;
 const languageObserver = new MutationObserver(updateLanguage);
@@ -801,8 +834,7 @@ $("lang").onclick = () => {
   $("lang").lang = isTelugu ? "en" : "te";
   $("lang").setAttribute("aria-pressed", String(isTelugu));
   document.title = isTelugu ? translate(baseTitle) : baseTitle;
-  if (C?.full) $("gmt").value = requestText(C);
-  showAIReport();
+  $("air").hidden=reportLanguage!==document.documentElement.lang;
   updateLanguage();
 };
 
