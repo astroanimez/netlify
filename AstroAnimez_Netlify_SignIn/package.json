@@ -1,0 +1,13 @@
+{
+  "name": "astroanimez-netlify",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/login.js src/sign-out.js --bundle --format=esm --outdir=public"
+  },
+  "dependencies": {
+    "@netlify/identity": "2.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  }
+}

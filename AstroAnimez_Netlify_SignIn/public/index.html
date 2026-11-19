@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in | AstroAnimez</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at top,#16344f,#06101f 70%);color:#f4f1e8;font:16px/1.5 system-ui,sans-serif;color-scheme:dark}
+main{width:min(100%,420px);background:#102840;border:1px solid #4c86a8;border-radius:18px;padding:clamp(20px,6vw,36px)}
+h1{margin:0;font:700 2.25rem Georgia,serif;color:#f6c453}
+h2{margin:8px 0 20px;font-size:1.2rem}
+form,label{display:grid;gap:8px}
+form{gap:14px}
+input,button{font:inherit;padding:11px;border:1px solid #4c86a8;border-radius:8px;color:inherit;background:#06101f;min-width:0}
+button{cursor:pointer;font-weight:650}
+button[type=submit]{color:#06101f;background:#f6c453;border-color:#f6c453}
+button:disabled{opacity:.6;cursor:wait}
+button:focus-visible,input:focus-visible{outline:2px solid #f6c453;outline-offset:3px}
+#google,#switch-mode{width:100%;margin-top:12px}
+#status{color:#f6c453;margin-bottom:0}
+#status:empty{display:none}
+[hidden]{display:none!important}
+</style>
+<script type="module" src="/login.js"></script>
+</head>
+<body>
+<main>
+<h1>AstroAnimez</h1>
+<h2 id="heading">Sign in to continue</h2>
+<form id="login-form" method="post" action="/">
+<label id="email-label">Email<input name="email" type="email" autocomplete="username" required></label>
+<label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+<button id="submit" type="submit" disabled>Sign in</button>
+</form>
+<button id="google" type="button" disabled>Continue with Google</button>
+<button id="switch-mode" type="button" disabled>Create an account</button>
+<p id="status" role="status">Loading sign-in…</p>
+<noscript><p>Enable JavaScript to sign in.</p></noscript>
+</main>
+</body>
+</html>

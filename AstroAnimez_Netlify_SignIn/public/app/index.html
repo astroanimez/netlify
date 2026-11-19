@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AstroAnimez – Vedic astrology birth chart</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+:root{--bg:#E6EADB;--ink:#1C2A20;--mut:#55634F;--card:#F3F5EA;--line:#AEB99B;--acc:#A9261C;--gold:#B87F0A;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131B15;--ink:#E7EBDC;--mut:#9AA892;--card:#1C2720;--line:#35433A;--acc:#EB7466;--gold:#E3B341;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131B15;--ink:#E7EBDC;--mut:#9AA892;--card:#1C2720;--line:#35433A;--acc:#EB7466;--gold:#E3B341;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Figtree,system-ui,sans-serif}
+.w{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+h1{font:400 clamp(44px,8vw,84px)/1 Gloock,Georgia,serif;margin:0;color:var(--acc)}
+h2{font:400 26px/1.2 Gloock,Georgia,serif;margin:36px 0 12px}
+.sub{color:var(--mut);max-width:48ch;margin:10px 0 28px}
+.hero{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:32px;align-items:start}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+form{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:12px}
+label{display:grid;gap:4px;font-size:14px;color:var(--mut)}
+input,button{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:9px 10px;width:100%}
+.r3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{cursor:pointer;width:auto}
+button.p{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600;padding:12px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}.tabs button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+svg{width:100%;height:auto;max-width:560px;display:block}
+svg text{fill:var(--ink);font-family:Figtree,sans-serif}
+.hint{font-size:13px;color:var(--mut)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:600}
+.sc{overflow-x:auto}
+.cur td{background:var(--card);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.c b{color:var(--acc)}
+.ai{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);padding:16px 20px;border-radius:6px;max-width:75ch}
+.ai h3{font:400 20px Gloock,serif;margin:18px 0 4px}.ai ul{padding-left:20px}
+#out{display:none}
+.err{color:var(--acc)}
+#lang{position:absolute;top:12px;left:12px;z-index:2;padding:.4rem .85rem;border:1px solid var(--line);border-radius:8px;background:#141327;color:#fff;cursor:pointer;font:600 1rem system-ui,sans-serif}
+.w{padding-top:58px}
+html[lang="te"] #ch svg text{font-family:system-ui,sans-serif}
+</style><style>
+:root:root:root{--bg:#06101f;--ink:#F4F1E8;--mut:#A9BCCD;--card:#14304d;--line:#4C86A8;--acc:#FF8A3D;--gold:#F6C453;--tl:#46E0C8;--dk:#020813;color-scheme:dark}
+body{font-family:'Nunito','Noto Sans Symbols','Segoe UI Symbol','Apple Symbols',system-ui,sans-serif;font-weight:400;background:linear-gradient(180deg,#06101f,#0b2038 55%,#050c19);background-attachment:fixed;overflow-x:hidden}
+.w{position:relative;z-index:1}
+svg text{font-family:'Nunito','Noto Sans Symbols','Segoe UI Symbol',sans-serif;font-weight:700}
+h1,h2,.ai h3,.hp h3{font-family:'Cinzel','Noto Serif',Georgia,serif;font-weight:800}
+h1{font-size:clamp(38px,8vw,76px);color:var(--gold);-webkit-text-stroke:2px var(--dk);paint-order:stroke fill;letter-spacing:2px;text-shadow:1px 1px 0 var(--dk),2px 2px 0 var(--dk),3px 3px 0 var(--dk),4px 4px 0 var(--dk),5px 6px 0 var(--dk)}
+h1 .b{color:var(--acc)}
+h2{display:inline-block;background:var(--gold);color:#0a1626;font-size:18px;letter-spacing:1px;padding:6px 18px;border:3px solid var(--dk);border-radius:12px;box-shadow:5px 5px 0 var(--dk);transform:skew(-6deg);margin:40px 0 16px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:6px}
+.orbs{position:relative;width:210px;height:120px;flex:none}
+.orbs i{position:absolute;border-radius:50%;border:3px solid var(--dk);box-shadow:inset -8px -8px 0 rgba(0,0,0,.28),inset 5px 5px 0 rgba(255,255,255,.35),5px 6px 0 var(--dk);animation:fl 5s ease-in-out infinite}
+.o1{width:84px;height:84px;left:0;top:22px;background:radial-gradient(circle at 30% 30%,#ffe2c7,#ff8a3d 55%,#c2410c)}
+.o2{width:54px;height:54px;left:104px;top:0;background:radial-gradient(circle at 30% 30%,#fff7c2,#f6c453 60%,#d08a00);animation-delay:-2s}
+.o3{width:62px;height:62px;right:0;bottom:0;background:radial-gradient(circle at 30% 30%,#c8fff4,#46e0c8 60%,#0f8f8a);animation-delay:-3.5s}
+.o3::after{content:"";position:absolute;left:-26px;right:-26px;top:24px;height:14px;border:3px solid var(--dk);border-radius:50%;background:rgba(255,255,255,.45);transform:rotate(-18deg)}
+.orbs b{position:absolute;color:var(--gold);font-size:26px;text-shadow:2px 2px 0 var(--dk)}.s1{left:84px;bottom:2px}.s2{right:62px;top:2px;font-size:20px}
+@keyframes fl{50%{transform:translateY(-10px)}}
+@media(max-width:560px){.orbs{display:none}}
+form,.c,.ai,.sc,.hp{background:linear-gradient(160deg,#1a3a5c,#0f2440);border:3px solid var(--dk);border-radius:18px;box-shadow:6px 6px 0 var(--dk),inset 0 4px 0 rgba(255,255,255,.1)}
+.sc{padding:6px 8px}.ai{border-left:3px solid var(--dk);box-shadow:6px 6px 0 var(--dk),inset 8px 0 0 var(--gold)}
+.c b{color:var(--gold)}
+input{background:#07142a;border:3px solid var(--dk);border-radius:10px;color:var(--ink);box-shadow:inset 0 3px 0 rgba(0,0,0,.4)}
+button{border:3px solid var(--dk);border-radius:12px;background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 5px 0 var(--dk);transition:transform .08s,box-shadow .08s}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 var(--dk)}
+button.p{background:linear-gradient(180deg,#FFB878,#FF8A3D 55%,#E8641A);color:#1d1005;font-size:17px}
+.tabs button[aria-pressed=true]{background:var(--gold);color:#0a1626}
+th{color:var(--gold)}th,td{border-bottom:2px solid rgba(76,134,168,.4)}
+.cur>td{background:rgba(246,196,83,.18)}
+#ch{perspective:1200px;background:linear-gradient(160deg,#1a3a5c,#0f2440);border:3px solid var(--dk);border-radius:22px;box-shadow:8px 8px 0 var(--dk),inset 0 4px 0 rgba(255,255,255,.1);padding:16px;max-width:600px}
+#ch svg{transform:rotateX(8deg) rotateY(-8deg);transition:transform .4s;filter:drop-shadow(10px 14px 0 rgba(0,0,0,.35))}
+#ch:hover svg{transform:none}
+svg rect{stroke-width:2.5}
+.hs{cursor:pointer;outline:none}
+.hs:hover .cell{fill:rgba(70,224,200,.14)}
+.hs.sel .cell{fill:rgba(70,224,200,.24);stroke:var(--tl);stroke-width:4}
+.hs:focus-visible .cell{stroke:var(--tl);stroke-width:4}
+.hp{margin-top:18px;padding:16px 18px;max-width:600px;animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.hp h3{font-size:19px;margin:0}
+.hp h4{margin:14px 0 4px;color:var(--tl);font:800 13px Nunito,sans-serif;letter-spacing:1px;text-transform:uppercase}
+.hp p{margin:4px 0}.hp ul{margin:4px 0;padding-left:18px}
+.hh{display:flex;gap:12px;align-items:center}
+.hbadge{flex:none;width:48px;height:48px;border-radius:50%;background:var(--gold);color:#0a1626;border:3px solid var(--dk);display:grid;place-items:center;font:800 17px Cinzel,serif;box-shadow:3px 3px 0 var(--dk)}
+button.tg{display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:transparent;border:0;box-shadow:none;padding:4px 0;border-radius:6px;font-weight:700}
+button.tg:active{transform:none;box-shadow:none}
+.chev{display:inline-block;color:var(--gold);transition:transform .2s}
+.md.open .chev{transform:rotate(90deg)}
+.md:hover>td{background:rgba(70,224,200,.08)}
+.sub[hidden]{display:none}
+.btns{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+a.btn{display:inline-block;text-decoration:none;border:3px solid var(--dk);border-radius:12px;padding:12px 18px;font-weight:800;font-size:17px;background:linear-gradient(180deg,#a8f0e2,#46E0C8 55%,#1fb7a3);color:#04201c;box-shadow:0 5px 0 var(--dk);transition:transform .08s,box-shadow .08s}
+a.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--dk)}
+a.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+textarea{width:100%;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:#07142a;border:3px solid var(--dk);border-radius:10px;padding:10px;margin-top:8px}
+details{margin-top:12px}summary{cursor:pointer}
+.sub>td{padding:4px 8px 12px}
+table.in{font-size:14px;background:rgba(2,8,19,.4);border-radius:10px}
+table.in th{color:var(--tl)}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.neb{position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(70px)}
+.n1{left:-25vmax;top:-25vmax;background:radial-gradient(circle,#1b7a96,transparent 65%);opacity:.38;animation:dr1 45s ease-in-out infinite alternate}
+.n2{right:-30vmax;bottom:-30vmax;background:radial-gradient(circle,#c4561c,transparent 65%);opacity:.26;animation:dr2 55s ease-in-out infinite alternate}
+@keyframes dr1{to{transform:translate(14vmax,10vmax) scale(1.12)}}
+@keyframes dr2{to{transform:translate(-12vmax,-8vmax) scale(1.1)}}
+.st{position:absolute;inset:0;animation:tw 7s ease-in-out infinite alternate}
+.st1{background:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 95px 75px,#cfe9ff,transparent),radial-gradient(1.5px 1.5px at 150px 140px,#ffe7b0,transparent);background-size:200px 200px}
+.st2{background:radial-gradient(1.2px 1.2px at 60px 50px,#fff,transparent),radial-gradient(1.8px 1.8px at 210px 180px,#ffe7b0,transparent),radial-gradient(1px 1px at 130px 250px,#cfe9ff,transparent);background-size:310px 310px;animation-duration:10s;animation-delay:-4s}
+@keyframes tw{from{opacity:.3}to{opacity:1}}
+.wheel{position:absolute;inset:0;display:grid;place-items:center}
+.wheel svg{width:min(105vmin,960px);max-width:none;opacity:.11;animation:spin 220s linear infinite;filter:none;transform:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sh{position:absolute;top:10%;left:78%;width:120px;height:2px;background:linear-gradient(90deg,#fff,transparent);opacity:0;transform:rotate(-35deg);animation:shoot 16s linear infinite;animation-delay:3s}
+@keyframes shoot{0%{opacity:0;transform:translate(0,0) rotate(-35deg)}2%{opacity:.85}7%{opacity:0;transform:translate(-320px,224px) rotate(-35deg)}100%{opacity:0;transform:translate(-320px,224px) rotate(-35deg)}}
+@media(prefers-reduced-motion:reduce){.orbs i,.neb,.st,.wheel svg,.sh,.hp{animation:none}#ch svg{transition:none}.chev{transition:none}}
+.site-nav{display:flex;gap:10px;margin:16px 0 24px}
+.site-nav a[aria-current="page"]{border-color:var(--gold);color:var(--gold)}
+#contact{max-width:620px}
+#contact h2{margin-top:0}
+#contact textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%;resize:vertical}
+#contact textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#contact-status{margin:0}
+#contact-status:empty{display:none}
+</style></head><body><button id="lang" type="button" lang="te" aria-pressed="false">తెలుగు</button><div class="bg" aria-hidden="true"><div class="neb n1"></div><div class="neb n2"></div><div class="st st1"></div><div class="st st2"></div><div class="wheel" id="wh"></div><i class="sh"></i></div><div class="w">
+<header class="hd"><h1><span>Astro</span><span class="b">Animez</span></h1><div class="orbs" aria-hidden="true"><i class="o1"></i><i class="o2"></i><i class="o3"></i><b class="s1">✦</b><b class="s2">✧</b></div></header>
+<nav class="site-nav" aria-label="Site navigation">
+<a class="btn" id="chart-link" href="#chart">Birth chart</a>
+<a class="btn" id="contact-link" href="#contact">Contact</a>
+<button type="button" class="btn" id="sign-out">Sign out</button>
+</nav>
+<p class="hint" id="session-status" role="status" hidden></p>
+<main id="chart-page">
+<p class="sub">Enter your birth details and AstroAnimez draws your South Indian style Rāśi chart, Navāṁśa and Vimśottarī Daśā, then writes your reading. Vedic astrology, anime style.</p>
+<div class="hero">
+<form id="f">
+<label>Name (optional)<input id="nm" autocomplete="name"></label>
+<div class="r2"><label>Date of birth<input type="date" id="dt" required></label><label>Time of birth<input type="time" id="tm" required></label></div>
+<label>Place of birth<input id="pl" list="cl" placeholder="Start typing a city" autocomplete="off" required></label>
+<datalist id="cl"></datalist>
+<div class="r3"><label>Latitude<input id="la" type="number" step="any" required></label><label>Longitude<input id="lo" type="number" step="any" required></label><label>UTC offset<input id="tz" type="number" step="any" required></label></div>
+<p class="hint" id="ph">Pick a listed city to fill coordinates, or type latitude, longitude (east positive) and UTC offset yourself. Adjust the offset if daylight saving applied at birth.</p>
+<button class="p" type="submit">Generate my chart</button>
+<div id="er" class="err" role="alert"></div>
+</form>
+<div><div class="tabs"><button type="button" id="b1" aria-pressed="true">Rāśi (D1)</button><button type="button" id="b9" aria-pressed="false">Navāṁśa (D9)</button></div><div id="ch"></div><p class="hint" id="chh">Tap any house in the chart to see its meaning and its rāśi details.</p><div id="hp" class="hp" hidden aria-live="polite"></div></div>
+</div>
+<div id="out">
+<h2>Birth details</h2><div class="cards" id="pn"></div>
+<h2>Graha positions (sidereal, Lahiri)</h2><div class="sc"><table id="tb"></table></div>
+<h2>Vimśottarī Daśā</h2><p class="hint">Tap a Mahādaśā to open its Antardaśās.</p><div class="sc"><table id="ds"></table></div><p class="hint" id="ad"></p>
+<h2>Yogas and doshas</h2><div class="cards" id="yg"></div>
+<h2>Chart reading</h2><div class="cards" id="rd"></div>
+<h2>Deeper AI reading</h2>
+<p class="hint">All your chart details (planets, houses, aspects, yogas, Navāṁśa and every daśā) are packed into one request, and an AI writes an easy-to-read report on personality, career, money, relationships, health, the current daśā and remedies. Use Claude here, or open the same request in your own Gemini.</p>
+<p class="btns"><button class="p" id="aib" type="button" hidden>Write my AI reading</button><a class="btn" id="gmb" href="https://gemini.google.com/app" target="_blank" rel="noopener">Analyze with Gemini</a></p>
+<p class="hint" id="gms" role="status">Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.</p>
+<details id="gmd"><summary class="hint">View or copy the full chart request</summary><textarea id="gmt" readonly rows="10" aria-label="Full chart request for AI"></textarea></details>
+<div class="ai" id="air" hidden></div>
+<p class="hint" style="margin-top:28px">Positions use a compact low-precision ephemeris (typically within a few arc-minutes for planets, up to about 0.3° for the Moon), mean lunar node and whole-sign houses. Readings are traditional interpretations for reflection, not predictions or professional advice.</p>
+</div>
+</main>
+<main id="contact" hidden>
+<h2 id="contact-title" tabindex="-1">Contact AstroAnimez</h2>
+<form id="contact-form" name="contact" method="POST" data-netlify="true">
+<input type="hidden" name="form-name" value="contact">
+<label>Your name<input name="name" autocomplete="name" maxlength="100" required></label>
+<label>Your email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+<label>Your message<textarea name="message" rows="6" maxlength="3000" required></textarea></label>
+<button class="p" type="submit">Send message</button>
+<p class="hint" id="contact-status" role="status"></p>
+</form>
+</main>
+</div>
+<script>
+const R=Math.PI/180,nm=x=>((x%360)+360)%360,$=i=>document.getElementById(i);
+const CITY="Hyderabad,17.385,78.4867,5.5;Mumbai,19.076,72.8777,5.5;Delhi,28.6139,77.209,5.5;Bengaluru,12.9716,77.5946,5.5;Chennai,13.0827,80.2707,5.5;Kolkata,22.5726,88.3639,5.5;Pune,18.5204,73.8567,5.5;Ahmedabad,23.0225,72.5714,5.5;Jaipur,26.9124,75.7873,5.5;Lucknow,26.8467,80.9462,5.5;Visakhapatnam,17.6868,83.2185,5.5;Vijayawada,16.5062,80.648,5.5;Warangal,17.9689,79.5941,5.5;Tirupati,13.6288,79.4192,5.5;Coimbatore,11.0168,76.9558,5.5;Madurai,9.9252,78.1198,5.5;Kochi,9.9312,76.2673,5.5;Thiruvananthapuram,8.5241,76.9366,5.5;Mysuru,12.2958,76.6394,5.5;Nagpur,21.1458,79.0882,5.5;Bhopal,23.2599,77.4126,5.5;Patna,25.5941,85.1376,5.5;Varanasi,25.3176,82.9739,5.5;Chandigarh,30.7333,76.7794,5.5;Bhubaneswar,20.2961,85.8245,5.5;Guwahati,26.1445,91.7362,5.5;Surat,21.1702,72.8311,5.5;Indore,22.7196,75.8577,5.5;Kathmandu,27.7172,85.324,5.75;Colombo,6.9271,79.8612,5.5;Dhaka,23.8103,90.4125,6;Karachi,24.8607,67.0011,5;London,51.5074,-0.1278,0;New York,40.7128,-74.006,-5;San Francisco,37.7749,-122.4194,-8;Dubai,25.2048,55.2708,4;Singapore,1.3521,103.8198,8;Sydney,-33.8688,151.2093,10;Toronto,43.6532,-79.3832,-5".split(";").map(s=>{const a=s.split(",");return{n:a[0],la:+a[1],lo:+a[2],tz:+a[3]}});
+$("cl").innerHTML=CITY.map(c=>`<option value="${c.n}">`).join("");
+$("pl").addEventListener("input",e=>{const c=CITY.find(c=>c.n.toLowerCase()==e.target.value.trim().toLowerCase());if(c){$("la").value=c.la;$("lo").value=c.lo;$("tz").value=c.tz}});
+const ZS=["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"].map(s=>s+"\uFE0E"),SG=["Mesha","Vrishabha","Mithuna","Karka","Simha","Kanya","Tula","Vrischika","Dhanu","Makara","Kumbha","Meena"].map((n,i)=>ZS[i]+" "+n),SS=["Ari","Tau","Gem","Can","Leo","Vir","Lib","Sco","Sag","Cap","Aqu","Pis"];
+const PK=["Su","Mo","Ma","Me","Ju","Ve","Sa","Ra","Ke"],PS={Su:"☉",Mo:"☽",Ma:"♂",Me:"☿",Ju:"♃",Ve:"♀",Sa:"♄",Ra:"☊",Ke:"☋"},PLN={Su:"Sun",Mo:"Moon",Ma:"Mars",Me:"Mercury",Ju:"Jupiter",Ve:"Venus",Sa:"Saturn",Ra:"Rahu",Ke:"Ketu"},PN=Object.fromEntries(Object.entries(PLN).map(([k,n])=>[k,PS[k]+"\uFE0E "+n]));
+const SIGL=["Ma","Ve","Me","Mo","Su","Me","Ve","Ma","Ju","Sa","Sa","Ju"];
+const NK=["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
+const DL=["Ke","Ve","Su","Mo","Ma","Ra","Ju","Sa","Me"],DY=[7,20,6,10,7,18,16,19,17];
+const SIG={Su:"soul, vitality and authority",Mo:"mind, emotions and nurturing",Ma:"energy, courage and drive",Me:"intellect, speech and trade",Ju:"wisdom, growth and fortune",Ve:"love, comfort and the arts",Sa:"discipline, duty and karma",Ra:"ambition and worldly hunger",Ke:"detachment and inner seeking"};
+const HT=["self, body and temperament","wealth, speech and family","courage, effort and siblings","home, mother and inner peace","intellect, children and creativity","work, health and rivals","marriage and partnerships","change, research and longevity","fortune, dharma and teachers","career, status and public life","gains, networks and ambitions","expenses, foreign lands and liberation"];
+const LAG=["bold, direct and self-starting","steady, sensual and determined","curious, witty and adaptable","nurturing, protective and intuitive","proud, warm and commanding","analytical, practical and service-minded","diplomatic, aesthetic and fair-minded","intense, private and resourceful","optimistic, philosophical and free-spirited","disciplined, ambitious and patient","independent, humane and unconventional","compassionate, imaginative and spiritual"];
+const MOT=["acts on feelings quickly","seeks security and comfort","needs variety and conversation","feels deeply and bonds strongly","needs recognition and warmth","processes emotions through analysis","needs harmony and partnership","feels intensely and guards the inner life","needs freedom and meaning","stays composed and responsible","values detachment and ideals","absorbs moods and seeks transcendence"];
+const TI=["Pratipada","Dwitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami","Ashtami","Navami","Dashami","Ekadashi","Dwadashi","Trayodashi","Chaturdashi"],VA=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const EX={Su:0,Mo:1,Ma:9,Me:5,Ju:3,Ve:11,Sa:6},DB={Su:6,Mo:7,Ma:3,Me:11,Ju:9,Ve:5,Sa:0},OW={Su:[4],Mo:[3],Ma:[0,7],Me:[2,5],Ju:[8,11],Ve:[1,6],Sa:[9,10]};
+const EL={Su:[[0,0],[0,0],[282.9404,4.70935e-5],[1,0],[.016709,-1.151e-9],[356.047,.9856002585]],
+Mo:[[125.1228,-.0529538083],[5.1454,0],[318.0634,.1643573223],[60.2666,0],[.0549,0],[115.3654,13.0649929509]],
+Me:[[48.3313,3.24587e-5],[7.0047,5e-8],[29.1241,1.01444e-5],[.387098,0],[.205635,5.59e-10],[168.6562,4.0923344368]],
+Ve:[[76.6799,2.4659e-5],[3.3946,2.75e-8],[54.891,1.38374e-5],[.72333,0],[.006773,-1.302e-9],[48.0052,1.6021302244]],
+Ma:[[49.5574,2.11081e-5],[1.8497,-1.78e-8],[286.5016,2.92961e-5],[1.523688,0],[.093405,2.516e-9],[18.6021,.5240207766]],
+Ju:[[100.4542,2.76854e-5],[1.303,-1.557e-7],[273.8777,1.64505e-5],[5.20256,0],[.048498,4.469e-9],[19.895,.0830853001]],
+Sa:[[113.6634,2.3898e-5],[2.4886,-1.081e-7],[339.3939,2.97661e-5],[9.55475,0],[.055546,-9.499e-9],[316.967,.0334442282]]};
+function orb(k,d){const[N,i,w,a,e,M]=EL[k].map(([c,r])=>c+r*d),m=M*R;let E=m+e*Math.sin(m)*(1+e*Math.cos(m));
+for(let j=0;j<6;j++)E-=(E-e*Math.sin(E)-m)/(1-e*Math.cos(E));
+const xv=a*(Math.cos(E)-e),yv=a*Math.sqrt(1-e*e)*Math.sin(E),vw=Math.atan2(yv,xv)+w*R,r=Math.hypot(xv,yv),n=N*R,ii=i*R;
+return{x:r*(Math.cos(n)*Math.cos(vw)-Math.sin(n)*Math.sin(vw)*Math.cos(ii)),y:r*(Math.sin(n)*Math.cos(vw)+Math.cos(n)*Math.sin(vw)*Math.cos(ii))}}
+const sn=x=>Math.sin(x*R);
+function lon(k,d){const s=orb("Su",d);if(k=="Su")return nm(Math.atan2(s.y,s.x)/R);
+if(k=="Ra")return nm(125.1228-.0529538083*d);if(k=="Ke")return nm(305.1228-.0529538083*d);
+const o=orb(k,d);let L;
+if(k=="Mo"){L=Math.atan2(o.y,o.x)/R;const Ms=356.047+.9856002585*d,Mm=115.3654+13.0649929509*d,N=125.1228-.0529538083*d,Ls=282.9404+4.70935e-5*d+Ms,Lm=N+318.0634+.1643573223*d+Mm,D=Lm-Ls,F=Lm-N;
+L+=-1.274*sn(Mm-2*D)+.658*sn(2*D)-.186*sn(Ms)-.059*sn(2*Mm-2*D)-.057*sn(Mm-2*D+Ms)+.053*sn(Mm+2*D)+.046*sn(2*D-Ms)+.041*sn(Mm-Ms)-.035*sn(D)-.031*sn(Mm+Ms)-.015*sn(2*F-2*D)+.011*sn(Mm-4*D)}
+else{L=Math.atan2(o.y+s.y,o.x+s.x)/R;const Mj=19.895+.0830853001*d,Mt=316.967+.0334442282*d;
+if(k=="Ju")L+=-.332*sn(2*Mj-5*Mt-67.6)-.056*sn(2*Mj-2*Mt+21)+.042*sn(3*Mj-5*Mt+21)-.036*sn(Mj-2*Mt)+.022*Math.cos((Mj-Mt)*R)+.023*sn(2*Mj-3*Mt+52)-.016*sn(Mj-5*Mt-69);
+if(k=="Sa")L+=.812*sn(2*Mj-5*Mt-67.6)-.229*Math.cos((2*Mj-4*Mt-2)*R)+.119*sn(Mj-2*Mt-3)+.046*sn(2*Mj-6*Mt-69)+.014*sn(Mj-3*Mt+32)}
+return nm(L)}
+const fmt=ms=>new Date(ms).toLocaleDateString("en-IN",{month:"short",year:"numeric",timeZone:"UTC"});
+function calc(y,mo,dd,H,Mi,tz,la,lg){
+const ms=Date.UTC(y,mo-1,dd,H,Mi)-tz*36e5,jd=ms/864e5+2440587.5,d=jd-2451543.5;
+const ay=23.85306+(jd-2451545)/36525*1.396971,eps=(23.4393-3.563e-7*d)*R;
+const ramc=nm(280.46061837+360.98564736629*(jd-2451545)+lg)*R;
+const asc=nm(Math.atan2(Math.cos(ramc),-(Math.sin(ramc)*Math.cos(eps)+Math.tan(la*R)*Math.sin(eps)))/R-ay);
+const g={};PK.forEach(k=>{const l=nm(lon(k,d)-ay);let rt=false;if(k=="Ra"||k=="Ke")rt=true;else if(k!="Su"&&k!="Mo")rt=((lon(k,d+.5)-lon(k,d-.5)+540)%360)-180<0;
+g[k]={l,s:Math.floor(l/30),rt}});
+g.As={l:asc,s:Math.floor(asc/30)};
+const ls=g.As.s;Object.values(g).forEach(p=>{p.h=(p.s-ls+12)%12+1;p.nk=Math.floor(p.l/(40/3));p.pd=Math.floor((p.l%(40/3))/(10/3))+1;p.n9=Math.floor(p.l/(10/3))%12});
+return{g,ms,ay,ls}}
+const YRM=365.25*864e5,fmtD=ms=>new Date(ms).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
+function anta(x){let t=x.a,st=DL.indexOf(x.k);const o=[];for(let j=0;j<9;j++){const k=(st+j)%9,e=t+x.y*DY[k]/120*YRM;o.push({k:DL[k],a:t,b:e});t=e}return o}
+function dasha(c){const m=c.g.Mo.l,nk=Math.floor(m/(40/3)),fr=(m%(40/3))/(40/3),YR=365.25*864e5;
+let i=nk%9,t=c.ms-fr*DY[i]*YR;const L=[];for(let j=0;j<9;j++){const k=(i+j)%9,e=t+DY[k]*YR;L.push({k:DL[k],y:DY[k],a:t,b:e});t=e}
+const now=Date.now(),cur=L.find(x=>now>=x.a&&now<x.b),ant=[];
+if(cur){let s=cur.a,st=DL.indexOf(cur.k);for(let j=0;j<9;j++){const k=(st+j)%9,e=s+cur.y*DY[k]/120*YR;ant.push({k:DL[k],a:s,b:e});s=e}}
+return{L,cur,ant:ant.find(x=>now>=x.a&&now<x.b),first:fr}}
+const POS=[[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[2,3],[1,3],[0,3],[0,2],[0,1],[0,0]];
+const PSN={Su:"Sun",Mo:"Moon",Ma:"Mars",Me:"Merc",Ju:"Jup",Ve:"Ven",Sa:"Sat",Ra:"Rahu",Ke:"Ketu"};
+const HB=["Tanu","Dhana","Sahaja","Sukha","Putra","Ari","Kalatra","Ayu","Dharma","Karma","Labha","Vyaya"];
+const HE=["Self-image, appearance, health, vitality and the overall direction of life","Money, family, food, speech, values and savings","Courage, effort, communication, skills and younger siblings","Home, mother, property, vehicles, education and emotional peace","Intelligence, creativity, children, romance and merit from past lives","Daily work, service, debts, illness, enemies and competition","Marriage, committed partnerships, business deals and public dealings","Transformation, inheritance, hidden matters, research and longevity","Fortune, dharma, higher learning, father, teachers and long journeys","Career, reputation, authority, achievements and public status","Income, gains, friendships, networks and fulfilment of desires","Expenses, losses, foreign lands, sleep, isolation and liberation (moksha)"];
+const HKA=["Sun","Jupiter","Mars","Moon","Jupiter","Mars and Saturn","Venus","Saturn","Jupiter and Sun","Sun, Mercury, Jupiter and Saturn","Jupiter","Saturn and Ketu"];
+const SBODY=["Head and brain","Face, throat and neck","Shoulders, arms and lungs","Chest and stomach","Heart, spine and upper back","Intestines and digestion","Kidneys and lower back","Reproductive organs","Hips and thighs","Knees, bones and joints","Calves, ankles and circulation","Feet and lymphatic system"];
+const STR=["pioneering, energetic and impulsive","stable, sensual and stubborn","communicative, curious and restless","emotional, protective and moody","confident, generous and proud","precise, helpful and critical","balanced, charming and indecisive","intense, secretive and determined","adventurous, honest and philosophical","disciplined, practical and reserved","inventive, humanitarian and detached","intuitive, compassionate and dreamy"];
+const ASP={Ma:[4,7,8],Ju:[5,7,9],Sa:[3,7,10],Ra:[5,7,9],Ke:[5,7,9]};
+const hOf=(c,dv,k)=>dv==9?(c.g[k].n9-c.g.As.n9+12)%12+1:c.g[k].h;
+function chart(c,dv,title,sub,sel){const by=Array.from({length:12},()=>[]);const ls=c?(dv==9?c.g.As.n9:c.g.As.s):-1;
+if(c)PK.forEach(k=>{const p=c.g[k];by[dv==9?p.n9:p.s].push({n:PSN[k],d:dv==9?"":Math.floor(p.l%30)+"°",r:p.rt&&k!="Ra"&&k!="Ke"})});
+let s=`<svg viewBox="0 0 480 480" role="img" aria-label="South Indian style birth chart">`;
+POS.forEach(([x,y],i)=>{const X=x*120,Y=y*120,it=by[i],two=it.length>4,h=c?(i-ls+12)%12+1:0;
+s+=c?`<g class="hs${sel===i?" sel":""}" data-i="${i}" tabindex="0" role="button" aria-label="House ${h}, ${SG[i].replace(/^\S+ /,"")}, ${it.length?it.map(t=>t.n).join(", "):"empty"}">`:"<g>";
+s+=`<rect class="cell" x="${X}" y="${Y}" width="120" height="120" fill="${i==ls?"rgba(246,196,83,.16)":"transparent"}" stroke="var(--line)" stroke-width="1.5"/><text x="${X+8}" y="${Y+16}" font-size="15" style="fill:var(--gold)">${ZS[i]} ${SS[i]}</text>`;
+if(i==ls)s+=`<path d="M${X} ${Y}L${X+26} ${Y}L${X} ${Y+26}Z" fill="var(--acc)" pointer-events="none"/>`;
+it.forEach((t,j)=>{const col=two?j%2:0,row=two?Math.floor(j/2):j,tx=two?t.n+(t.r?" R":""):t.n+(t.d?" "+t.d:"")+(t.r?" R":"");
+s+=`<text x="${X+(two?8+col*54:12)}" y="${Y+(two?34+row*16:38+row*20)}" font-size="${two?13:15}">${tx}</text>`});
+if(c)s+=`<text x="${X+112}" y="${Y+113}" text-anchor="end" font-size="12" style="fill:var(--tl)">${h==1?"H1 · Lagna":"H"+h}</text>`;
+s+="</g>"});
+s+=`<rect x="120" y="120" width="240" height="240" fill="none" stroke="var(--line)" stroke-width="1.5" pointer-events="none"/>`;
+s+=`<text x="240" y="225" text-anchor="middle" font-size="24" style="font-family:'Cinzel',serif;font-weight:800;fill:var(--acc)">${title}</text><text x="240" y="255" text-anchor="middle" font-size="14" style="fill:var(--mut)">${sub}</text></svg>`;return s}
+function houseInfo(c,dv,i){const g=c.g,ls=dv==9?g.As.n9:g.As.s,h=(i-ls+12)%12+1,lord=SIGL[i],lh=hOf(c,dv,lord),lsg=dv==9?g[lord].n9:g[lord].s;
+const here=PK.filter(k=>(dv==9?g[k].n9:g[k].s)===i);
+const asp=PK.filter(k=>{const ph=hOf(c,dv,k);return ph!==h&&(ASP[k]||[7]).includes((h-ph+12)%12+1)});
+const T=[];if([1,4,7,10].includes(h))T.push("Kendra (angle)");if([1,5,9].includes(h))T.push("Trikona (trine)");if([6,8,12].includes(h))T.push("Dusthana (challenging)");if([3,6,10,11].includes(h))T.push("Upachaya (improves with time)");if([2,7].includes(h))T.push("Maraka");
+const ex=PK.filter(k=>EX[k]===i).map(k=>PLN[k]),db=PK.filter(k=>DB[k]===i).map(k=>PLN[k]);
+const pl=here.length?"<ul>"+here.map(k=>{const q=k=="Ra"||k=="Ke"?"":dg(k,i);return`<li><b>${PLN[k]}</b>${dv==9?"":` ${dm(g[k])} in ${NK[g[k].nk]} pada ${g[k].pd}`}${q?", "+q:""}${g[k].rt&&k!="Ra"&&k!="Ke"?", retrograde":""}: ${SIG[k]}</li>`}).join("")+"</ul>":"<p>No planets here. An empty house is read through its lord and the planets that aspect it.</p>";
+return`<div class="hh"><span class="hbadge">H${h}</span><div><h3>${HB[h-1]} Bhava</h3><span class="hint">${SG[i]} falls in your house ${h}${h==1?" (Lagna)":""}${dv==9?" in the Navāṁśa chart":""}</span></div></div>
+<h4>House details</h4><p>${HE[h-1]}.</p><p><b>Type:</b> ${T.join(", ")||"Neutral"}<br><b>Natural significator:</b> ${HKA[h-1]}</p>
+<h4>Rāśi details: ${SG[i]}</h4><p><b>Ruling planet:</b> ${PLN[lord]}, placed in house ${lh} (${SG[lsg]})<br><b>Element:</b> ${["Fire","Earth","Air","Water"][i%4]}<br><b>Quality:</b> ${["Movable (Chara)","Fixed (Sthira)","Dual (Dwiswabhava)"][i%3]}<br><b>Polarity:</b> ${i%2?"Feminine (even sign)":"Masculine (odd sign)"}<br><b>Body area:</b> ${SBODY[i]}<br><b>Temperament:</b> ${STR[i]}</p>${ex.length||db.length?`<p>${ex.length?"<b>Exaltation of:</b> "+ex.join(", "):""}${ex.length&&db.length?"<br>":""}${db.length?"<b>Debilitation of:</b> "+db.join(", "):""}</p>`:""}
+<p>With ${PLN[lord]} as lord, the matters of this house (${HE[h-1].split(",")[0].toLowerCase()} and more) flow toward ${HT[lh-1]}.</p>
+<h4>Planets in this house</h4>${pl}
+<h4>Aspects received</h4><p>${asp.length?asp.map(k=>PLN[k]).join(", "):"No planets aspect this house."}</p>`}
+let C=null,DV=1,INFO="",SEL=-1;
+function showHouse(){const e=$("hp");if(!C||SEL<0){e.hidden=true;return}e.innerHTML=houseInfo(C,DV,SEL);e.hidden=false}
+function draw(){$("ch").innerHTML=chart(C,DV,C?(DV==1?"Rāśi":"Navāṁśa"):"AstroAnimez",C?INFO:"Your chart appears here",SEL);$("b1").setAttribute("aria-pressed",DV==1);$("b9").setAttribute("aria-pressed",DV==9);showHouse()}
+function pick(g){if(!g||!C)return;const i=+g.dataset.i;SEL=SEL===i?-1:i;draw();if(SEL>=0){const n=$("ch").querySelector(`.hs[data-i="${i}"]`);if(n)n.focus({preventScroll:true})}}
+$("ch").addEventListener("click",e=>pick(e.target.closest(".hs")));
+$("ch").addEventListener("keydown",e=>{if(e.key=="Enter"||e.key==" "){const g=e.target.closest(".hs");if(g){e.preventDefault();pick(g)}}});
+$("b1").onclick=()=>{DV=1;draw()};$("b9").onclick=()=>{DV=9;draw()};draw();
+$("ds").addEventListener("click",e=>{const b=e.target.closest("button.tg");if(!b)return;const o=b.getAttribute("aria-expanded")!="true";b.setAttribute("aria-expanded",o);$(b.getAttribute("aria-controls")).hidden=!o;b.closest("tr").classList.toggle("open",o)});
+(()=>{let l="",t="";for(let i=0;i<12;i++){const a=i*Math.PI/6,b=a+Math.PI/12;l+=`<line x1="${(150*Math.cos(a)).toFixed(1)}" y1="${(150*Math.sin(a)).toFixed(1)}" x2="${(195*Math.cos(a)).toFixed(1)}" y2="${(195*Math.sin(a)).toFixed(1)}"/>`;t+=`<text x="${(172*Math.cos(b)).toFixed(1)}" y="${(172*Math.sin(b)).toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="24" style="fill:#bfe3f5">${ZS[i]}</text>`}
+$("wh").innerHTML=`<svg viewBox="-200 -200 400 400"><g fill="none" stroke="#7fc4e0" stroke-width="1.2"><circle r="195"/><circle r="150"/><circle r="70"/>${l}</g>${t}</svg>`})();
+const esc=s=>String(s).replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+const dg=(k,s)=>EX[k]===s?"exalted":DB[k]===s?"debilitated":(OW[k]||[]).includes(s)?"in own sign":"";
+const dm=p=>`${Math.floor(p.l%30)}°${String(Math.floor(p.l%1*60)).padStart(2,"0")}′`;
+function yogas(c){const g=c.g,o=[],kd=h=>[1,4,7,10].includes(h);
+if([0,3,6,9].includes((g.Ju.s-g.Mo.s+12)%12))o.push(["Gajakesari yoga","Jupiter is in a kendra from the Moon: good reputation, wisdom and lasting support."]);
+if(g.Su.s==g.Me.s)o.push(["Budhaditya yoga","Sun and Mercury share a sign: sharp intellect and skill with ideas."]);
+if(g.Mo.s==g.Ma.s)o.push(["Chandra-Mangala yoga","Moon with Mars: enterprise and a drive to earn."]);
+const PM={Ma:"Ruchaka",Me:"Bhadra",Ju:"Hamsa",Ve:"Malavya",Sa:"Sasa"};
+for(const k in PM){const p=g[k];if(kd(p.h)&&(EX[k]==p.s||OW[k].includes(p.s)))o.push([PM[k]+" yoga (Mahapurusha)",`${PN[k]} is strong in a kendra: marked ${SIG[k]}.`])}
+if([1,2,4,7,8,12].includes(g.Ma.h))o.push(["Kuja dosha","Mars in house "+g.Ma.h+": traditionally advises care and compatibility in partnership."]);
+const a=[g.Su,g.Mo,g.Ma,g.Me,g.Ju,g.Ve,g.Sa].map(p=>nm(p.l-g.Ra.l));
+if(a.every(x=>x<180)||a.every(x=>x>=180))o.push(["Kala Sarpa pattern","All seven planets lie on one side of the Rahu–Ketu axis: intense, karmic life themes."]);
+if(g.Mo.l&&(g.Sa.s==g.Mo.s||(g.Sa.s-g.Mo.s+12)%12==1||(g.Mo.s-g.Sa.s+12)%12==1))o.push(["Sade Sati-type Saturn–Moon link at birth","Saturn on or beside the Moon: a serious, resilient emotional nature."]);
+return o.length?o:[["No major classical yoga flagged","The chart’s strength lies in its individual placements below."]]}
+function reading(c){const g=c.g,ll=SIGL[c.ls],lp=g[ll],o=[];
+o.push(`<div class="c"><b>Lagna: ${SG[c.ls]}</b><br>You come across as ${LAG[c.ls]}. Lagna lord ${PN[ll]} sits in house ${lp.h} (${SG[lp.s]}), so your life direction leans toward ${HT[lp.h-1]}.</div>`);
+o.push(`<div class="c"><b>Moon: ${SG[g.Mo.s]}, ${NK[g.Mo.nk]}</b><br>Emotionally, you ${MOT[g.Mo.s]}. The Moon in house ${g.Mo.h} puts your peace of mind in the area of ${HT[g.Mo.h-1]}.</div>`);
+["Su","Ma","Me","Ju","Ve","Sa"].forEach(k=>{const p=g[k],q=dg(k,p.s);o.push(`<div class="c"><b>${PN[k]} in house ${p.h}</b> (${SG[p.s]}${q?", "+q:""}${p.rt?", retrograde":""})<br>${PN[k]} governs ${SIG[k]}. Here it works through ${HT[p.h-1]}${q=="exalted"||q=="in own sign"?" with strength and ease":q=="debilitated"?", asking for extra effort and maturity":""}${p.rt?"; retrograde turns this energy inward and slows its results":""}.</div>`)});
+o.push(`<div class="c"><b>Rahu in house ${g.Ra.h}, Ketu in house ${g.Ke.h}</b><br>Rahu pulls you toward ${HT[g.Ra.h-1]} with hunger for more; Ketu in ${HT[g.Ke.h-1]} points to detachment and past-life mastery.</div>`);return o.join("")}
+const PROMPT=`You are an experienced, kind Vedic astrologer (Jyotish). Using ONLY the computed chart data below (sidereal zodiac, Lahiri ayanamsa, whole-sign houses), write a deep but easy-to-understand report for a complete beginner. Use simple everyday English; if you must use a Sanskrit term, explain it in brackets right away. Use short paragraphs and these ## headings: Quick summary (5 lines), Personality and nature, Career and money, Love, marriage and family, Health and wellbeing, Education and children, Strengths and challenges (explain each yoga simply), Current Mahadasha and Antardasha (what to expect now and over the next 2 to 3 years), Upcoming dasha periods at a glance, Simple remedies and practical advice. Refer to the actual placements and house numbers. Stay warm and balanced: no fear-based or absolute predictions, and no medical, legal or financial instructions. Finish with one short line noting that astrology is for reflection.\n\nCHART DATA\n`;
+const sgn=i=>SG[i].replace(/^\S+ /,"");
+function fullData(nameV,c,D,dd){const g=c.g,L=[],el=(g.Mo.l-g.Su.l+360)%360,ti=Math.floor(el/12);
+L.push(`Name: ${nameV||"not given"}`,`Birth: ${dd[0]}-${String(dd[1]+1).padStart(2,"0")}-${String(dd[2]).padStart(2,"0")} at ${$("tm").value}, place ${$("pl").value||"custom coordinates"} (lat ${$("la").value}, lon ${$("lo").value}, UTC offset ${$("tz").value})`,`Today: ${new Date().toDateString()}`,"",`Lagna (Ascendant): ${sgn(c.ls)} ${dm(g.As)}, nakshatra ${NK[g.As.nk]} pada ${g.As.pd}`,`Moon sign: ${sgn(g.Mo.s)}; birth nakshatra ${NK[g.Mo.nk]} pada ${g.Mo.pd}`,`Moon phase: ${ti<15?"Shukla":"Krishna"} paksha, tithi ${ti%15==14?(ti<15?"Purnima":"Amavasya"):TI[ti%15]}; weekday ${VA[new Date(Date.UTC(...dd)).getUTCDay()]}`,"","PLANETS (D1 sign, degree, house, nakshatra, dignity, Navamsa):");
+PK.forEach(k=>{const p=g[k],q=dg(k,p.s);L.push(`- ${PLN[k]}: ${sgn(p.s)} ${dm(p)}, house ${p.h}, ${NK[p.nk]} pada ${p.pd}${q?", "+q:""}${p.rt&&k!="Ra"&&k!="Ke"?", retrograde":""}; Navamsa sign ${sgn(p.n9)}, Navamsa house ${hOf(c,9,k)}`)});
+L.push("","HOUSES:");
+for(let h=1;h<=12;h++){const i=(c.ls+h-1)%12,ld=SIGL[i],occ=PK.filter(k=>g[k].s===i).map(k=>PLN[k]),asp=PK.filter(k=>{const ph=g[k].h;return ph!==h&&(ASP[k]||[7]).includes((h-ph+12)%12+1)}).map(k=>PLN[k]);L.push(`- House ${h} (${HB[h-1]}: ${HE[h-1]}): ${sgn(i)}, lord ${PLN[ld]} sits in house ${g[ld].h} (${sgn(g[ld].s)}); planets here: ${occ.join(", ")||"none"}; aspected by: ${asp.join(", ")||"none"}`)}
+L.push("","YOGAS AND DOSHAS:");yogas(c).forEach(([a,b])=>L.push(`- ${a}: ${b}`));
+L.push("","VIMSHOTTARI DASHA (Mahadasha sequence):");D.L.forEach(x=>L.push(`- ${PLN[x.k]} ${fmt(x.a)} to ${fmt(x.b)}${x===D.cur?" (RUNNING NOW)":""}`));
+if(D.cur){L.push("",`Antardashas inside the running ${PLN[D.cur.k]} Mahadasha:`);const n=Date.now();anta(D.cur).forEach(a=>L.push(`- ${PLN[D.cur.k]}-${PLN[a.k]}: ${fmtD(a.a)} to ${fmtD(a.b)}${n>=a.a&&n<a.b?" (RUNNING NOW)":""}`))}
+return L.join("\n")}
+function render(nameV,c,dd){const g=c.g;INFO=SG[c.ls]+" Lagna";C=c;SEL=-1;draw();
+const el=(g.Mo.l-g.Su.l+360)%360,ti=Math.floor(el/12),d0=new Date(c.ms+0);
+$("pn").innerHTML=[["Lagna (Ascendant)",`${SG[c.ls]} ${dm(g.As)}`],["Janma Rashi (Moon sign)",SG[g.Mo.s]],["Janma Nakshatra",`${NK[g.Mo.nk]}, pada ${g.Mo.pd}`],["Tithi",`${ti<15?"Shukla":"Krishna"} ${ti%15==14?(ti<15?"Purnima":"Amavasya"):TI[ti%15]}`],["Vara (weekday)",VA[(new Date(Date.UTC(...dd)).getUTCDay())]],["Ayanamsa (Lahiri)",g.As&&c.ay.toFixed(3)+"°"]].map(([a,b])=>`<div class="c"><span class="hint">${a}</span><br><b>${b}</b></div>`).join("");
+$("tb").innerHTML="<tr><th>Graha<th>Sign<th>Degree<th>Nakshatra<th>House<th>Status</tr>"+["As",...PK].map(k=>{const p=g[k],q=k=="As"?"":dg(k,p.s);return`<tr><td>${k=="As"?"Lagna":PN[k]}<td>${SG[p.s]}<td>${dm(p)}<td>${NK[p.nk]} ${p.pd}<td>${p.h}<td>${[q,p.rt&&k!="Ra"&&k!="Ke"?"retrograde":""].filter(Boolean).join(", ")||"—"}</tr>`}).join("");
+const D=dasha(c);
+$("ds").innerHTML="<tr><th>Mahadasha<th>From<th>To</tr>"+D.L.map((x,i)=>{const cu=x===D.cur,now=Date.now(),sub=anta(x).map(a=>`<tr class="${cu&&now>=a.a&&now<a.b?"cur":""}"><td>${PLN[x.k]} – ${PLN[a.k]}<td>${fmtD(a.a)}<td>${fmtD(a.b)}</tr>`).join("");
+return`<tr class="md${cu?" cur open":""}"><td><button type="button" class="tg" aria-expanded="${cu}" aria-controls="ad${i}"><span class="chev" aria-hidden="true">▸</span>${PN[x.k]} (${x.y} yrs)</button><td>${fmt(x.a)}<td>${fmt(x.b)}</tr><tr class="sub" id="ad${i}"${cu?"":" hidden"}><td colspan="3"><table class="in"><tr><th>Antardasha<th>From<th>To</tr>${sub}</table></td></tr>`}).join("");
+$("ad").textContent=D.cur?`Running now: ${PN[D.cur.k]} mahadasha${D.ant?` with ${PN[D.ant.k]} antardasha until ${fmt(D.ant.b)}`:""}. ${PN[D.cur.k]} stresses ${SIG[D.cur.k]}, shown through house ${g[D.cur.k].h} (${HT[g[D.cur.k].h-1]}).`:"The dasha sequence began before or extends past today’s window.";
+$("yg").innerHTML=yogas(c).map(([a,b])=>`<div class="c"><b>${a}</b><br>${b}</div>`).join("");
+$("rd").innerHTML=reading(c);$("out").style.display="block";
+c.summary={name:nameV,lagna:SG[c.ls],moon:SG[g.Mo.s]+" / "+NK[g.Mo.nk],grahas:PK.map(k=>`${PN[k]}: ${SG[g[k].s]} h${g[k].h} ${NK[g[k].nk]}${dg(k,g[k].s)?" "+dg(k,g[k].s):""}${g[k].rt&&k!="Ra"&&k!="Ke"?" R":""}`),dasha:D.cur?`${D.cur.k}/${D.ant?D.ant.k:""} until ${fmt(D.cur.b)}`:"",yogas:yogas(c).map(y=>y[0])};
+c.full=fullData(nameV,c,D,dd);$("gmt").value=requestText(c);$("gms").textContent="Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.";$("gmd").open=false;reportLanguage=null;$("air").hidden=true;$("out").scrollIntoView({behavior:"smooth",block:"start"})}
+$("f").addEventListener("submit",e=>{e.preventDefault();$("er").textContent="";
+try{const[y,m,d]=$("dt").value.split("-").map(Number),[H,M]=$("tm").value.split(":").map(Number);
+const c=calc(y,m,d,H,M,+$("tz").value,+$("la").value,+$("lo").value);
+if(Object.values(c.g).some(p=>isNaN(p.l)))throw 0;render($("nm").value.trim(),c,[y,m-1,d])}catch(x){$("er").textContent="Check the date, time and coordinates, then try again."}});
+const md=t=>{let h="",ul=false;esc(t).split("\n").forEach(l=>{l=l.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");if(/^\s*[-*] /.test(l)){if(!ul){h+="<ul>";ul=true}h+="<li>"+l.replace(/^\s*[-*] /,"")+"</li>"}else{if(ul){h+="</ul>";ul=false}h+=/^#{1,4} /.test(l)?"<h3>"+l.replace(/^#+ /,"")+"</h3>":l.trim()?"<p>"+l+"</p>":""}});return h+(ul?"</ul>":"")};
+let SM=null, reportLanguage=null;
+function showAIReport(){ $("air").hidden=reportLanguage!==document.documentElement.lang; }
+(async()=>{try{SM=await claude.use("sample");if(SM)$("aib").hidden=false}catch(e){}})();
+$("aib").onclick=async()=>{if(!C||!SM)return;const b=$("aib"),o=$("air");b.disabled=true;reportLanguage=document.documentElement.lang;showAIReport();o.textContent="Reading your chart…";
+const pr=requestText(C);
+try{await SM(pr,{modelTier:"default",cache:false,onText:({text})=>{o.innerHTML=md(text)}})}catch(e){if(!o.querySelector("p, h3, ul"))o.textContent=e&&e.code=="not_granted"?"Permission was declined, so no AI reading was written.":"The AI reading could not be generated right now. Try again in a moment."}b.disabled=false;b.textContent="Write it again"};
+$("gmb").addEventListener("click",e=>{if(!C||!C.full){e.preventDefault();return}const t=requestText(C),s=$("gms");$("gmt").value=t;const fail=()=>{s.textContent="Could not copy automatically. Open “View or copy the full chart request” below, copy it, then paste it into Gemini.";$("gmd").open=true};
+try{navigator.clipboard.writeText(t).then(()=>{s.textContent="Copied! In the Gemini tab, sign in with your Gmail, paste (Ctrl+V or long-press) and press send."},fail)}catch(x){fail()}});
+
+const telugu = {
+  "Sign out": "సైన్ అవుట్",
+  "Could not sign out. Please try again.": "సైన్ అవుట్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించండి.",
+  "Site navigation": "సైట్ నావిగేషన్",
+  "Birth chart": "జన్మకుండలి",
+  "Contact": "సంప్రదించండి",
+  "Contact AstroAnimez": "ఆస్ట్రోఅనిమెజ్‌ను సంప్రదించండి",
+  "Your name": "మీ పేరు",
+  "Your email": "మీ ఇమెయిల్",
+  "Your message": "మీ సందేశం",
+  "Send message": "సందేశం పంపండి",
+  "Sending your message…": "మీ సందేశాన్ని పంపుతున్నాం…",
+  "Your message was sent.": "మీ సందేశం పంపబడింది.",
+  "Enter your name, a valid email address, and a message.": "మీ పేరు, సరైన ఇమెయిల్ చిరునామా, సందేశం నమోదు చేయండి.",
+  "Too many messages. Please wait and try again.": "ఎక్కువ సందేశాలు పంపారు. కొద్దిసేపు ఆగి మళ్లీ ప్రయత్నించండి.",
+  "Your message could not be sent. Please try again later.": "మీ సందేశాన్ని పంపలేకపోయాం. కాసేపటి తర్వాత మళ్లీ ప్రయత్నించండి.",
+
+  "AstroAnimez – Vedic astrology birth chart": "ఆస్ట్రోఅనిమెజ్ – వేద జ్యోతిష్య జన్మకుండలి",
+  "Enter your birth details and AstroAnimez draws your South Indian style Rāśi chart, Navāṁśa and Vimśottarī Daśā, then writes your reading. Vedic astrology, anime style.": "మీ జన్మ వివరాలు నమోదు చేయండి. ఆస్ట్రోఅనిమెజ్ దక్షిణ భారత శైలిలో రాశి చక్రం, నవాంశం, వింశోత్తరీ దశలను తయారుచేసి వాటి విశ్లేషణను అందిస్తుంది. అనిమే శైలిలో వేద జ్యోతిష్యం.",
+  "Name (optional)": "పేరు (ఐచ్ఛికం)",
+  "Date of birth": "పుట్టిన తేదీ",
+  "Time of birth": "పుట్టిన సమయం",
+  "Place of birth": "పుట్టిన ప్రదేశం",
+  "Start typing a city": "నగరం పేరు టైప్ చేయండి",
+  "Latitude": "అక్షాంశం",
+  "Longitude": "రేఖాంశం",
+  "UTC offset": "UTC సమయ వ్యత్యాసం",
+  "Pick a listed city to fill coordinates, or type latitude, longitude (east positive) and UTC offset yourself. Adjust the offset if daylight saving applied at birth.": "జాబితాలోని నగరాన్ని ఎంచుకుంటే స్థాన నిర్దేశాంకాలు నిండుతాయి. లేదా అక్షాంశం, రేఖాంశం (తూర్పు ధనాత్మకం), UTC సమయ వ్యత్యాసం మీరే నమోదు చేయండి. జన్మ సమయంలో డేలైట్ సేవింగ్ అమలులో ఉంటే సమయ వ్యత్యాసాన్ని సవరించండి.",
+  "Generate my chart": "నా జన్మకుండలి రూపొందించండి",
+  "Tap any house in the chart to see its meaning and its rāśi details.": "ఒక భావాన్ని ఎంచుకుని దాని అర్థం, రాశి వివరాలు చూడండి.",
+  "Birth details": "జన్మ వివరాలు",
+  "Graha positions (sidereal, Lahiri)": "గ్రహ స్థానాలు (నిరయణ, లాహిరి)",
+  "Tap a Mahādaśā to open its Antardaśās.": "అంతర్దశలు చూడటానికి మహాదశను ఎంచుకోండి.",
+  "Yogas and doshas": "యోగాలు, దోషాలు",
+  "Chart reading": "జాతక విశ్లేషణ",
+  "Deeper AI reading": "విస్తృత AI జాతక విశ్లేషణ",
+  "All your chart details (planets, houses, aspects, yogas, Navāṁśa and every daśā) are packed into one request, and an AI writes an easy-to-read report on personality, career, money, relationships, health, the current daśā and remedies. Use Claude here, or open the same request in your own Gemini.": "గ్రహాలు, భావాలు, దృష్టులు, యోగాలు, నవాంశం, అన్ని దశల వివరాలు ఒకే అభ్యర్థనలో ఉంటాయి. వ్యక్తిత్వం, వృత్తి, ధనం, సంబంధాలు, ఆరోగ్యం, ప్రస్తుత దశ, పరిహారాల గురించి AI సులభంగా అర్థమయ్యే నివేదిక రాస్తుంది. ఇక్కడ Claude వాడండి లేదా అదే అభ్యర్థనను Geminiలో తెరవండి.",
+  "Write my AI reading": "నా AI జాతక విశ్లేషణ రాయండి",
+  "Write it again": "మళ్లీ రాయండి",
+  "Analyze with Gemini": "Geminiతో విశ్లేషించండి",
+  "Gemini button: your full chart request is copied, Gemini opens in a new tab (sign in with your Gmail there), then paste and send.": "Gemini బటన్ నొక్కితే పూర్తి అభ్యర్థన కాపీ అవుతుంది. కొత్త ట్యాబ్‌లో Gemini తెరుచుకుంటుంది. అక్కడ Gmail ఖాతాతో సైన్ ఇన్ చేసి, అభ్యర్థనను పేస్ట్ చేసి పంపండి.",
+  "View or copy the full chart request": "పూర్తి జాతక అభ్యర్థనను చూడండి లేదా కాపీ చేయండి",
+  "Full chart request for AI": "AI కోసం పూర్తి జాతక అభ్యర్థన",
+  "Positions use a compact low-precision ephemeris (typically within a few arc-minutes for planets, up to about 0.3° for the Moon), mean lunar node and whole-sign houses. Readings are traditional interpretations for reflection, not predictions or professional advice.": "గ్రహస్థానాలకు పరిమిత ఖచ్చితత్వం గల గణన పట్టికను (గ్రహాలకు సాధారణంగా కొన్ని ఆర్క్ నిమిషాల తేడా, చంద్రునికి సుమారు 0.3° వరకు), సగటు చంద్ర పాత బిందువులను, సంపూర్ణ రాశి భావాలను ఉపయోగిస్తాం. ఇవి ఆత్మపరిశీలన కోసం ఇచ్చే సంప్రదాయ వ్యాఖ్యానాలు మాత్రమే.",
+  "South Indian style birth chart": "దక్షిణ భారత శైలి జన్మకుండలి",
+  "Your chart appears here": "మీ జన్మకుండలి ఇక్కడ కనిపిస్తుంది",
+  "House details": "భావ వివరాలు",
+  "Rāśi details": "రాశి వివరాలు",
+  "Planets in this house": "ఈ భావంలోని గ్రహాలు",
+  "Aspects received": "ఈ భావంపై గ్రహ దృష్టులు",
+  "No planets aspect this house.": "ఈ భావంపై గ్రహ దృష్టులు లేవు.",
+  "No planets here. An empty house is read through its lord and the planets that aspect it.": "ఈ భావంలో గ్రహాలు లేవు. భావాధిపతిని, ఈ భావాన్ని చూసే గ్రహాలను బట్టి ఫలితాన్ని పరిశీలిస్తారు.",
+  "Natural significator": "సహజ కారక గ్రహం",
+  "Ruling planet": "రాశి అధిపతి",
+  "placed in house": "ఉన్న భావం",
+  "Exaltation of": "ఉచ్చ గ్రహాలు",
+  "Debilitation of": "నీచ గ్రహాలు",
+  "Check the date, time and coordinates, then try again.": "తేదీ, సమయం, స్థాన నిర్దేశాంకాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
+  "Reading your chart…": "మీ జాతకాన్ని విశ్లేషిస్తున్నాం…",
+  "Permission was declined, so no AI reading was written.": "అనుమతి లభించకపోవడంతో AI జాతక విశ్లేషణ రూపొందలేదు.",
+  "The AI reading could not be generated right now. Try again in a moment.": "ప్రస్తుతం AI జాతక విశ్లేషణ రూపొందించలేకపోయాం. కాసేపటి తర్వాత మళ్లీ ప్రయత్నించండి.",
+  "Could not copy automatically. Open “View or copy the full chart request” below, copy it, then paste it into Gemini.": "ఆటోమేటిక్‌గా కాపీ కాలేదు. కింద ఉన్న ‘పూర్తి జాతక అభ్యర్థనను చూడండి లేదా కాపీ చేయండి’ విభాగం తెరిచి, అభ్యర్థనను కాపీ చేసి Geminiలో పేస్ట్ చేయండి.",
+  "Copied! In the Gemini tab, sign in with your Gmail, paste (Ctrl+V or long-press) and press send.": "కాపీ అయింది! Gemini ట్యాబ్‌లో Gmail ఖాతాతో సైన్ ఇన్ చేసి, పేస్ట్ చేసి (Ctrl+V లేదా ఎక్కువసేపు నొక్కి) పంపండి.",
+  "Jupiter is in a kendra from the Moon: good reputation, wisdom and lasting support.": "చంద్రుని నుంచి గురువు కేంద్రంలో ఉన్నాడు. మంచి పేరు, వివేకం, దీర్ఘకాలిక మద్దతు సూచితం.",
+  "Sun and Mercury share a sign: sharp intellect and skill with ideas.": "రవి, బుధుడు ఒకే రాశిలో ఉన్నారు. పదునైన బుద్ధి, ఆలోచనల్లో నైపుణ్యం సూచితం.",
+  "Moon with Mars: enterprise and a drive to earn.": "చంద్రుడు కుజునితో ఉన్నాడు. చొరవ, సంపాదించాలనే తపన సూచితం.",
+  "All seven planets lie on one side of the Rahu–Ketu axis: intense, karmic life themes.": "ఏడు గ్రహాలూ రాహు–కేతు అక్షానికి ఒకే వైపున ఉన్నాయి. జీవితంలో కర్మ సంబంధమైన గాఢ అనుభవాలు సూచితం.",
+  "Saturn on or beside the Moon: a serious, resilient emotional nature.": "శని చంద్రుని రాశిలో లేదా పక్క రాశిలో ఉన్నాడు. గంభీరమైన, కష్టాలను తట్టుకునే మనస్తత్వం సూచితం.",
+  "The chart’s strength lies in its individual placements below.": "ఈ జాతక బలాన్ని కింది గ్రహ స్థానాల ద్వారా అర్థం చేసుకోవచ్చు.",
+  "No major classical yoga flagged": "ప్రధాన సంప్రదాయ యోగం కనిపించలేదు",
+  "Sade Sati-type Saturn–Moon link at birth": "జన్మ సమయంలో ఏలినాటి శనిని పోలిన శని–చంద్ర సంబంధం",
+  "Gajakesari yoga": "గజకేసరి యోగం",
+  "Budhaditya yoga": "బుధాదిత్య యోగం",
+  "Chandra-Mangala yoga": "చంద్ర–మంగళ యోగం",
+  "Kuja dosha": "కుజ దోషం",
+  "Kala Sarpa pattern": "కాలసర్ప గ్రహ అమరిక",
+  "The dasha sequence began before or extends past today’s window.": "ప్రస్తుత తేదీ లెక్కించిన దశల కాలపరిధిలో లేదు.",
+  "Mesha": "మేషం",
+  "Vrishabha": "వృషభం",
+  "Mithuna": "మిథునం",
+  "Karka": "కర్కాటకం",
+  "Simha": "సింహం",
+  "Kanya": "కన్య",
+  "Tula": "తుల",
+  "Vrischika": "వృశ్చికం",
+  "Dhanu": "ధనుస్సు",
+  "Makara": "మకరం",
+  "Kumbha": "కుంభం",
+  "Meena": "మీనం",
+  "Ari": "మేష",
+  "Tau": "వృష",
+  "Gem": "మిథు",
+  "Can": "కర్కా",
+  "Leo": "సింహ",
+  "Vir": "కన్య",
+  "Lib": "తుల",
+  "Sco": "వృశ్చి",
+  "Sag": "ధను",
+  "Cap": "మకర",
+  "Aqu": "కుంభ",
+  "Pis": "మీన",
+  "Sun": "రవి",
+  "Moon": "చంద్రుడు",
+  "Mars": "కుజుడు",
+  "Mercury": "బుధుడు",
+  "Jupiter": "గురువు",
+  "Venus": "శుక్రుడు",
+  "Saturn": "శని",
+  "Rahu": "రాహువు",
+  "Ketu": "కేతువు",
+  "Merc": "బుధుడు",
+  "Jup": "గురువు",
+  "Ven": "శుక్రుడు",
+  "Sat": "శని",
+  "Ashwini": "అశ్విని",
+  "Bharani": "భరణి",
+  "Krittika": "కృత్తిక",
+  "Rohini": "రోహిణి",
+  "Mrigashira": "మృగశిర",
+  "Ardra": "ఆర్ద్ర",
+  "Punarvasu": "పునర్వసు",
+  "Pushya": "పుష్యమి",
+  "Ashlesha": "ఆశ్లేష",
+  "Magha": "మఖ",
+  "Purva Phalguni": "పుబ్బ",
+  "Uttara Phalguni": "ఉత్తర",
+  "Hasta": "హస్త",
+  "Chitra": "చిత్త",
+  "Swati": "స్వాతి",
+  "Vishakha": "విశాఖ",
+  "Anuradha": "అనూరాధ",
+  "Jyeshtha": "జ్యేష్ఠ",
+  "Mula": "మూల",
+  "Purva Ashadha": "పూర్వాషాఢ",
+  "Uttara Ashadha": "ఉత్తరాషాఢ",
+  "Shravana": "శ్రవణం",
+  "Dhanishta": "ధనిష్ఠ",
+  "Shatabhisha": "శతభిషం",
+  "Purva Bhadrapada": "పూర్వాభాద్ర",
+  "Uttara Bhadrapada": "ఉత్తరాభాద్ర",
+  "Revati": "రేవతి",
+  "Pratipada": "పాడ్యమి",
+  "Dwitiya": "విదియ",
+  "Tritiya": "తదియ",
+  "Chaturthi": "చవితి",
+  "Panchami": "పంచమి",
+  "Shashthi": "షష్ఠి",
+  "Saptami": "సప్తమి",
+  "Ashtami": "అష్టమి",
+  "Navami": "నవమి",
+  "Dashami": "దశమి",
+  "Ekadashi": "ఏకాదశి",
+  "Dwadashi": "ద్వాదశి",
+  "Trayodashi": "త్రయోదశి",
+  "Chaturdashi": "చతుర్దశి",
+  "Purnima": "పౌర్ణమి",
+  "Amavasya": "అమావాస్య",
+  "Shukla": "శుక్ల",
+  "Krishna": "కృష్ణ",
+  "Sunday": "ఆదివారం",
+  "Monday": "సోమవారం",
+  "Tuesday": "మంగళవారం",
+  "Wednesday": "బుధవారం",
+  "Thursday": "గురువారం",
+  "Friday": "శుక్రవారం",
+  "Saturday": "శనివారం",
+  "Mon": "సోమ",
+  "Tue": "మంగళ",
+  "Wed": "బుధ",
+  "Thu": "గురు",
+  "Fri": "శుక్ర",
+  "Jan": "జనవరి",
+  "Feb": "ఫిబ్రవరి",
+  "Mar": "మార్చి",
+  "Apr": "ఏప్రిల్",
+  "May": "మే",
+  "Jun": "జూన్",
+  "Jul": "జూలై",
+  "Aug": "ఆగస్టు",
+  "Sep": "సెప్టెంబర్",
+  "Sept": "సెప్టెంబర్",
+  "Oct": "అక్టోబర్",
+  "Nov": "నవంబర్",
+  "Dec": "డిసెంబర్",
+  "Tanu": "తను",
+  "Dhana": "ధన",
+  "Sahaja": "సహజ",
+  "Sukha": "సుఖ",
+  "Putra": "పుత్ర",
+  "Kalatra": "కళత్ర",
+  "Ayu": "ఆయు",
+  "Dharma": "ధర్మ",
+  "Karma": "కర్మ",
+  "Labha": "లాభ",
+  "Vyaya": "వ్యయ",
+  "Ari Bhava": "అరి భావం",
+  "Rāśi": "రాశి",
+  "Navāṁśa": "నవాంశం",
+  "Navamsa": "నవాంశం",
+  "Vimśottarī Daśā": "వింశోత్తరీ దశ",
+  "Graha": "గ్రహం",
+  "Sign": "రాశి",
+  "Degree": "డిగ్రీ",
+  "Nakshatra": "నక్షత్రం",
+  "House": "భావం",
+  "Status": "స్థితి",
+  "Mahadasha": "మహాదశ",
+  "Antardasha": "అంతర్దశ",
+  "From": "నుంచి",
+  "To": "వరకు",
+  "Lagna (Ascendant)": "లగ్నం",
+  "Lagna": "లగ్నం",
+  "Janma Rashi (Moon sign)": "జన్మ రాశి (చంద్ర రాశి)",
+  "Janma Nakshatra": "జన్మ నక్షత్రం",
+  "Tithi": "తిథి",
+  "Vara (weekday)": "వారం",
+  "Ayanamsa (Lahiri)": "అయనాంశం (లాహిరి)",
+  "Bhava": "భావం",
+  "Type": "రకం",
+  "Neutral": "తటస్థం",
+  "Element": "తత్త్వం",
+  "Quality": "స్వభావం",
+  "Polarity": "లింగం",
+  "Body area": "శరీర భాగం",
+  "Temperament": "మనస్తత్వం",
+  "Fire": "అగ్ని",
+  "Earth": "భూమి",
+  "Air": "వాయు",
+  "Water": "జలం",
+  "Kendra (angle)": "కేంద్రం",
+  "Trikona (trine)": "త్రికోణం",
+  "Dusthana (challenging)": "దుఃస్థానం",
+  "Upachaya (improves with time)": "ఉపచయం (కాలంతో అభివృద్ధి)",
+  "Maraka": "మారకం",
+  "Movable (Chara)": "చర",
+  "Fixed (Sthira)": "స్థిర",
+  "Dual (Dwiswabhava)": "ద్విస్వభావ",
+  "Feminine (even sign)": "స్త్రీ (సమ రాశి)",
+  "Masculine (odd sign)": "పురుష (బేసి రాశి)",
+  "exalted": "ఉచ్చ స్థితి",
+  "debilitated": "నీచ స్థితి",
+  "in own sign": "స్వరాశి",
+  "retrograde": "వక్రగతి",
+  "pada": "పాదం",
+  "yrs": "సంవత్సరాలు",
+  "empty": "ఖాళీ",
+  "and": "మరియు",
+  "R": "వ",
+  "in": "లో",
+  "house": "భావం",
+  "to": "వరకు",
+  "Ruchaka": "రుచక",
+  "Bhadra": "భద్ర",
+  "Hamsa": "హంస",
+  "Malavya": "మాలవ్య",
+  "Sasa": "శశ",
+  "yoga (Mahapurusha)": "యోగం (మహాపురుష)",
+  "is strong in a kendra: marked": "కేంద్రంలో బలంగా ఉంది. ప్రధాన లక్షణాలు",
+  "traditionally advises care and compatibility in partnership.": "భాగస్వామ్యంలో జాగ్రత్త, అనుకూలత చూడాలని సంప్రదాయం సూచిస్తుంది.",
+  "falls in your house": "మీ జాతకంలో ఈ భావంలో ఉంది",
+  "in the Navāṁśa chart": "నవాంశ చక్రంలో",
+  "and more": "తదితరాలు",
+  "flow toward": "సంబంధిత రంగాల వైపు మళ్లుతాయి",
+  "With": "ఈ భావానికి",
+  "as lord, the matters of this house": "అధిపతి. ఈ భావ విషయాలు",
+  "You come across as": "ఇతరులకు మీలో కనిపించే లక్షణాలు",
+  "Lagna lord": "లగ్నాధిపతి",
+  "sits in house": "ఉన్న భావం",
+  "so your life direction leans toward": "కాబట్టి మీ జీవితంలో ప్రాధాన్యం పొందే అంశాలు",
+  "Emotionally, you": "మీ భావోద్వేగ స్వభావం",
+  "The Moon in house": "చంద్రుడు ఉన్న భావం",
+  "puts your peace of mind in the area of": "మీ మనశ్శాంతితో ముడిపడిన అంశాలు",
+  "governs": "సూచించే అంశాలు",
+  "Here it works through": "ఈ స్థానంలో ప్రభావం కనిపించే అంశాలు",
+  "with strength and ease": "సహజంగా, బలంగా",
+  "asking for extra effort and maturity": "అదనపు కృషి, పరిపక్వత అవసరం",
+  "retrograde turns this energy inward and slows its results": "వక్రగతి ఈ శక్తిని అంతర్ముఖం చేస్తుంది. ఫలితాలు ఆలస్యంగా కనిపించవచ్చు",
+  "Rahu pulls you toward": "రాహువు మీలో ఆసక్తి పెంచే అంశాలు",
+  "with hunger for more": "వాటిని మరింతగా కోరుకునేలా చేస్తాడు",
+  "Ketu in": "కేతువు ప్రభావిత అంశాలు",
+  "points to detachment and past-life mastery": "వైరాగ్యాన్ని, పూర్వజన్మ నైపుణ్యాన్ని సూచిస్తాయి",
+  "Running now": "ప్రస్తుతం నడుస్తున్న దశ",
+  "mahadasha": "మహాదశ",
+  "with": "తో పాటు",
+  "antardasha until": "అంతర్దశ ముగింపు",
+  "stresses": "ప్రాధాన్యం ఇచ్చే అంశాలు",
+  "shown through house": "ప్రభావం కనిపించే భావం",
+  "Self-image, appearance, health, vitality and the overall direction of life": "స్వీయ రూపం, కనిపించే తీరు, ఆరోగ్యం, జీవశక్తి, జీవిత దిశ",
+  "Money, family, food, speech, values and savings": "ధనం, కుటుంబం, ఆహారం, మాట, విలువలు, పొదుపు",
+  "Courage, effort, communication, skills and younger siblings": "ధైర్యం, ప్రయత్నం, సంభాషణ, నైపుణ్యాలు, చిన్న తోబుట్టువులు",
+  "Home, mother, property, vehicles, education and emotional peace": "ఇల్లు, తల్లి, ఆస్తి, వాహనాలు, విద్య, మనశ్శాంతి",
+  "Intelligence, creativity, children, romance and merit from past lives": "బుద్ధి, సృజనాత్మకత, సంతానం, ప్రేమ, పూర్వజన్మ పుణ్యం",
+  "Daily work, service, debts, illness, enemies and competition": "రోజువారీ పని, సేవ, అప్పులు, అనారోగ్యం, శత్రువులు, పోటీ",
+  "Marriage, committed partnerships, business deals and public dealings": "వివాహం, స్థిర భాగస్వామ్యాలు, వ్యాపార ఒప్పందాలు, ప్రజలతో వ్యవహారాలు",
+  "Transformation, inheritance, hidden matters, research and longevity": "పరివర్తన, వారసత్వం, రహస్య విషయాలు, పరిశోధన, ఆయుష్షు",
+  "Fortune, dharma, higher learning, father, teachers and long journeys": "భాగ్యం, ధర్మం, ఉన్నత విద్య, తండ్రి, గురువులు, దూర ప్రయాణాలు",
+  "Career, reputation, authority, achievements and public status": "వృత్తి, కీర్తి, అధికారం, విజయాలు, సామాజిక స్థానం",
+  "Income, gains, friendships, networks and fulfilment of desires": "ఆదాయం, లాభాలు, స్నేహాలు, పరిచయాలు, కోరికలు నెరవేరడం",
+  "Expenses, losses, foreign lands, sleep, isolation and liberation (moksha)": "ఖర్చులు, నష్టాలు, విదేశాలు, నిద్ర, ఏకాంతం, మోక్షం",
+  "self-image": "స్వీయ రూపం",
+  "money": "ధనం",
+  "courage": "ధైర్యం",
+  "home": "ఇల్లు",
+  "intelligence": "బుద్ధి",
+  "daily work": "రోజువారీ పని",
+  "marriage": "వివాహం",
+  "transformation": "పరివర్తన",
+  "fortune": "భాగ్యం",
+  "career": "వృత్తి",
+  "income": "ఆదాయం",
+  "expenses": "ఖర్చులు",
+  "self, body and temperament": "స్వయం, శరీరం, మనస్తత్వం",
+  "wealth, speech and family": "సంపద, మాట, కుటుంబం",
+  "courage, effort and siblings": "ధైర్యం, ప్రయత్నం, తోబుట్టువులు",
+  "home, mother and inner peace": "ఇల్లు, తల్లి, మనశ్శాంతి",
+  "intellect, children and creativity": "బుద్ధి, సంతానం, సృజనాత్మకత",
+  "work, health and rivals": "పని, ఆరోగ్యం, ప్రత్యర్థులు",
+  "marriage and partnerships": "వివాహం, భాగస్వామ్యాలు",
+  "change, research and longevity": "మార్పు, పరిశోధన, ఆయుష్షు",
+  "fortune, dharma and teachers": "భాగ్యం, ధర్మం, గురువులు",
+  "career, status and public life": "వృత్తి, హోదా, ప్రజా జీవితం",
+  "gains, networks and ambitions": "లాభాలు, పరిచయాలు, ఆశయాలు",
+  "expenses, foreign lands and liberation": "ఖర్చులు, విదేశాలు, మోక్షం",
+  "bold, direct and self-starting": "ధైర్యంగా, సూటిగా, స్వయంగా చొరవ తీసుకునే తీరు",
+  "steady, sensual and determined": "స్థిరత్వం, ఇంద్రియానుభూతులపై ఆసక్తి, దృఢ సంకల్పం",
+  "curious, witty and adaptable": "కుతూహలం, చతురత, పరిస్థితులకు తగినట్టు మారే గుణం",
+  "nurturing, protective and intuitive": "ఆదరించే, కాపాడే గుణం, అంతఃప్రజ్ఞ",
+  "proud, warm and commanding": "ఆత్మగౌరవం, ఆప్యాయత, నాయకత్వం",
+  "analytical, practical and service-minded": "విశ్లేషణ, ఆచరణాత్మకత, సేవాభావం",
+  "diplomatic, aesthetic and fair-minded": "సమన్వయం, సౌందర్యాభిరుచి, న్యాయబుద్ధి",
+  "intense, private and resourceful": "తీవ్రత, గోప్యత, సమయస్ఫూర్తి",
+  "optimistic, philosophical and free-spirited": "ఆశావాదం, తాత్త్విక చింతన, స్వేచ్ఛాప్రియత్వం",
+  "disciplined, ambitious and patient": "క్రమశిక్షణ, ఉన్నతాశయాలు, ఓర్పు",
+  "independent, humane and unconventional": "స్వతంత్రత, మానవత్వం, భిన్న ఆలోచన",
+  "compassionate, imaginative and spiritual": "కరుణ, ఊహాశక్తి, ఆధ్యాత్మికత",
+  "acts on feelings quickly": "భావాలకు వెంటనే స్పందిస్తారు",
+  "seeks security and comfort": "భద్రత, సౌకర్యం కోరుకుంటారు",
+  "needs variety and conversation": "వైవిధ్యం, సంభాషణ కోరుకుంటారు",
+  "feels deeply and bonds strongly": "లోతుగా అనుభూతి చెంది బలమైన బంధాలు ఏర్పరచుకుంటారు",
+  "needs recognition and warmth": "గుర్తింపు, ఆప్యాయత కోరుకుంటారు",
+  "processes emotions through analysis": "భావోద్వేగాలను విశ్లేషించి అర్థం చేసుకుంటారు",
+  "needs harmony and partnership": "సామరస్యం, భాగస్వామ్యం కోరుకుంటారు",
+  "feels intensely and guards the inner life": "తీవ్రంగా స్పందిస్తూ అంతరంగాన్ని గోప్యంగా ఉంచుతారు",
+  "needs freedom and meaning": "స్వేచ్ఛను, జీవితానికి అర్థాన్ని కోరుకుంటారు",
+  "stays composed and responsible": "సంయమనంతో, బాధ్యతతో ఉంటారు",
+  "values detachment and ideals": "వైరాగ్యానికి, ఆదర్శాలకు విలువ ఇస్తారు",
+  "absorbs moods and seeks transcendence": "ఇతరుల భావాలను గ్రహించి ఆధ్యాత్మిక ఉన్నతిని కోరుకుంటారు",
+  "Head and brain": "తల, మెదడు",
+  "Face, throat and neck": "ముఖం, గొంతు, మెడ",
+  "Shoulders, arms and lungs": "భుజాలు, చేతులు, ఊపిరితిత్తులు",
+  "Chest and stomach": "ఛాతీ, కడుపు",
+  "Heart, spine and upper back": "గుండె, వెన్నెముక, వీపు పైభాగం",
+  "Intestines and digestion": "పేగులు, జీర్ణవ్యవస్థ",
+  "Kidneys and lower back": "మూత్రపిండాలు, నడుము",
+  "Reproductive organs": "ప్రజనన అవయవాలు",
+  "Hips and thighs": "తుంటి, తొడలు",
+  "Knees, bones and joints": "మోకాళ్లు, ఎముకలు, కీళ్లు",
+  "Calves, ankles and circulation": "పిక్కలు, చీలమండలు, రక్తప్రసరణ",
+  "Feet and lymphatic system": "పాదాలు, శోషరస వ్యవస్థ",
+  "pioneering, energetic and impulsive": "చొరవ, ఉత్సాహం, తొందరపాటు",
+  "stable, sensual and stubborn": "స్థిరత్వం, ఇంద్రియానుభూతులపై ఆసక్తి, మొండితనం",
+  "communicative, curious and restless": "మాటకారితనం, కుతూహలం, చంచలత్వం",
+  "emotional, protective and moody": "భావుకత, రక్షణ భావం, మారే మానసిక స్థితి",
+  "confident, generous and proud": "ఆత్మవిశ్వాసం, ఉదారత, గర్వం",
+  "precise, helpful and critical": "కచ్చితత్వం, సహాయక స్వభావం, విమర్శన దృష్టి",
+  "balanced, charming and indecisive": "సమతుల్యత, ఆకర్షణ, నిర్ణయంలో సందిగ్ధత",
+  "intense, secretive and determined": "తీవ్రత, గోప్యత, దృఢ సంకల్పం",
+  "adventurous, honest and philosophical": "సాహసం, నిజాయితీ, తాత్త్విక చింతన",
+  "disciplined, practical and reserved": "క్రమశిక్షణ, ఆచరణాత్మకత, మితభాషిత్వం",
+  "inventive, humanitarian and detached": "నవకల్పన, మానవత, నిర్లిప్తత",
+  "intuitive, compassionate and dreamy": "అంతఃప్రజ్ఞ, కరుణ, ఊహాలోకంలో విహరించడం",
+  "soul, vitality and authority": "ఆత్మ, జీవశక్తి, అధికారం",
+  "mind, emotions and nurturing": "మనసు, భావాలు, పోషణ",
+  "energy, courage and drive": "శక్తి, ధైర్యం, కార్యోత్సాహం",
+  "intellect, speech and trade": "బుద్ధి, మాట, వ్యాపారం",
+  "wisdom, growth and fortune": "జ్ఞానం, అభివృద్ధి, భాగ్యం",
+  "love, comfort and the arts": "ప్రేమ, సౌకర్యం, కళలు",
+  "discipline, duty and karma": "క్రమశిక్షణ, కర్తవ్యం, కర్మ",
+  "ambition and worldly hunger": "ఆశయం, భౌతిక కోరికలు",
+  "detachment and inner seeking": "వైరాగ్యం, అంతర్ముఖ అన్వేషణ",
+  "Name": "పేరు",
+  "Birth": "జననం",
+  "at": "సమయం",
+  "place": "ప్రదేశం",
+  "custom coordinates": "నమోదు చేసిన నిర్దేశాంకాలు",
+  "lat": "అక్షాంశం",
+  "lon": "రేఖాంశం",
+  "Today": "నేడు",
+  "not given": "ఇవ్వలేదు",
+  "Moon sign": "చంద్ర రాశి",
+  "birth nakshatra": "జన్మ నక్షత్రం",
+  "Moon phase": "చంద్ర దశ",
+  "paksha": "పక్షం",
+  "tithi": "తిథి",
+  "weekday": "వారం",
+  "PLANETS (D1 sign, degree, house, nakshatra, dignity, Navamsa)": "గ్రహాలు (D1 రాశి, డిగ్రీ, భావం, నక్షత్రం, స్థితి, నవాంశం)",
+  "Navamsa sign": "నవాంశ రాశి",
+  "Navamsa house": "నవాంశ భావం",
+  "HOUSES": "భావాలు",
+  "lord": "అధిపతి",
+  "planets here": "ఇక్కడి గ్రహాలు",
+  "aspected by": "దృష్టి చూపే గ్రహాలు",
+  "none": "ఏవీ లేవు",
+  "YOGAS AND DOSHAS": "యోగాలు, దోషాలు",
+  "VIMSHOTTARI DASHA (Mahadasha sequence)": "వింశోత్తరీ దశ (మహాదశల క్రమం)",
+  "RUNNING NOW": "ప్రస్తుతం నడుస్తోంది",
+  "Antardashas inside the running": "ప్రస్తుత మహాదశలోని అంతర్దశలు",
+  "Mars and Saturn": "కుజుడు, శని",
+  "Jupiter and Sun": "గురువు, రవి",
+  "Sun, Mercury, Jupiter and Saturn": "రవి, బుధుడు, గురువు, శని",
+  "Saturn and Ketu": "శని, కేతువు"
+};
+const escapePattern = phrase => phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const terms = new RegExp("\\b(?:" + Object.keys(telugu).sort((a,b)=>b.length-a.length).map(escapePattern).join("|") + ")(?![A-Za-z])", "g");
+function translate(text) {
+  return text.replace(terms, term => telugu[term])
+    .replace(/\bH(\d+)\b/g, "భావం $1");
+}
+const teluguPrompt = `మీరు అనుభవజ్ఞులైన వేద జ్యోతిష్కులు. దిగువ ఇచ్చిన నిరయణ, లాహిరి, సంపూర్ణ రాశి భావాల జాతక వివరాలను మాత్రమే ఆధారంగా తీసుకోండి. మొత్తం నివేదికను సరళమైన తెలుగులో రాయండి. జ్యోతిష్య పదాలను సులభంగా వివరించండి. చిన్న పేరాలు, ## ఉపశీర్షికలు వాడండి. సారాంశం (5 పంక్తులు), వ్యక్తిత్వం, వృత్తి మరియు ధనం, ప్రేమ మరియు కుటుంబం, ఆరోగ్యం, విద్య మరియు సంతానం, బలాలు మరియు సవాళ్లు (ప్రతి యోగాన్ని వివరించండి), ప్రస్తుత మహాదశ మరియు అంతర్దశ (ఇప్పటి నుంచి 2–3 సంవత్సరాలు), రాబోయే దశలు, సాధారణ పరిహారాలు మరియు ఆచరణాత్మక సూచనలు అనే విభాగాలు చేర్చండి. వాస్తవ గ్రహ స్థానాలు, భావ సంఖ్యలను పేర్కొనండి. భయం కలిగించే లేదా కచ్చితమైన భవిష్యవాణులు, వైద్య, న్యాయ లేదా ఆర్థిక ఆదేశాలు ఇవ్వవద్దు. చివర్లో ఇది ఆత్మపరిశీలన కోసం అని ఒక పంక్తిలో చెప్పండి.\n\nజాతక వివరాలు\n`;
+function requestText(chartData) {
+  if (document.documentElement.lang !== "te") return PROMPT + chartData.full;
+  return teluguPrompt + chartData.full.split("\n").map((line, i) => {
+    if (i === 0 && chartData.summary.name) return "పేరు: " + chartData.summary.name;
+    const place = i === 1 && line.match(/^(.*?, place )(.*)( \(lat .*)$/);
+    return place && place[2] !== "custom coordinates"
+      ? translate(place[1]) + place[2] + translate(place[3])
+      : translate(line);
+  }).join("\n");
+}
+const originalText = new WeakMap();
+const originalAttributes = new WeakMap();
+function updateLanguage() {
+  const isTelugu = document.documentElement.lang === "te";
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      return node.parentElement?.closest("script, style, #lang, #air, #gmt")
+        ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  let node;
+  while ((node = walker.nextNode())) {
+    if (!originalText.has(node)) originalText.set(node, node.data);
+    const original = originalText.get(node);
+    const value = isTelugu ? translate(original) : original;
+    if (node.data !== value) node.data = value;
+  }
+  for (const element of document.querySelectorAll("[aria-label], [placeholder]")) {
+    if (!originalAttributes.has(element)) originalAttributes.set(element, {});
+    const original = originalAttributes.get(element);
+    for (const name of ["aria-label", "placeholder"]) {
+      if (!element.hasAttribute(name)) continue;
+      original[name] ??= element.getAttribute(name);
+      const value = isTelugu ? translate(original[name]) : original[name];
+      if (element.getAttribute(name) !== value) element.setAttribute(name, value);
+    }
+  }
+  if (reportLanguage && $("air").firstChild?.nodeType === Node.TEXT_NODE) {
+    const message = $("air").firstChild;
+    if (!originalText.has(message)) originalText.set(message, message.data);
+    const value = isTelugu ? translate(originalText.get(message)) : originalText.get(message);
+    if (message.data !== value) message.data = value;
+  }
+}
+const baseTitle = document.title;
+const languageObserver = new MutationObserver(updateLanguage);
+languageObserver.observe(document.body, {subtree:true, childList:true});
+$("lang").onclick = () => {
+  const isTelugu = document.documentElement.lang !== "te";
+  document.documentElement.lang = isTelugu ? "te" : "en";
+  $("lang").textContent = isTelugu ? "English" : "తెలుగు";
+  $("lang").lang = isTelugu ? "en" : "te";
+  $("lang").setAttribute("aria-pressed", String(isTelugu));
+  document.title = isTelugu ? translate(baseTitle) : baseTitle;
+  if (C?.full) $("gmt").value = requestText(C);
+  showAIReport();
+  updateLanguage();
+};
+
+function showPage(focus = false) {
+  const contact = location.hash === "#contact";
+  $("chart-page").hidden = contact;
+  $("contact").hidden = !contact;
+  for (const id of ["chart-link", "contact-link"]) {
+    const link = $(id);
+    if ((id === "contact-link") === contact) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+  if (contact && focus) $("contact-title").focus();
+}
+window.addEventListener("hashchange", () => showPage(true));
+showPage();
+
+$("contact-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = form.querySelector("button");
+  const status = $("contact-status");
+  button.disabled = true;
+  status.textContent = "Sending your message…";
+  try {
+    const response = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form))
+    });
+    if (response.ok) {
+      status.textContent = "Your message was sent.";
+      form.reset();
+    } else if (response.status === 400) {
+      status.textContent = "Enter your name, a valid email address, and a message.";
+    } else if (response.status === 429) {
+      status.textContent = "Too many messages. Please wait and try again.";
+    } else {
+      throw new Error("Contact delivery failed");
+    }
+  } catch {
+    status.textContent = "Your message could not be sent. Please try again later.";
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+<script type="module" src="/sign-out.js"></script>
+</body></html>
