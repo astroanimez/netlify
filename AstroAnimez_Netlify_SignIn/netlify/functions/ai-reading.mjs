@@ -73,6 +73,13 @@ export default async function readChart(request) {
   const payload = AI_API_MODE === "chat"
     ? { model: AI_MODEL, messages: [{ role: "system", content: system }, { role: "user", content: user }] }
     : { prompt: system + "\n\n" + user, language };
+  console.info("[ai-reading] runtime_provider", {
+  groqHost: endpoint.hostname === "api.groq.com",
+  exactGroqUrl: AI_API_URL === "https://api.groq.com/openai/v1/chat/completions",
+  groqModel: AI_MODEL === "openai/gpt-oss-20b",
+  chatMode: AI_API_MODE === "chat"
+});
+
   try {
     const upstream = await fetch(endpoint, {
       method: "POST",
