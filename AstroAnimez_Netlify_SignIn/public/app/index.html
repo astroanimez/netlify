@@ -150,6 +150,10 @@ table.in th{color:var(--tl)}
 <h2>Birth details</h2><div class="cards" id="pn"></div>
 <h2>Graha positions (sidereal, Lahiri)</h2><div class="sc"><table id="tb"></table></div>
 <h2>Vimśottarī Daśā</h2><p class="hint">Tap a Mahādaśā to open its Antardaśās.</p><div class="sc"><table id="ds"></table></div><p class="hint" id="ad"></p>
+<h2>Shani Sade Sati</h2>
+<p class="hint">Approximate Saturn transit dates in UTC, from birth to age 100. Retrograde returns appear as separate rows.</p>
+<p class="hint" id="sade-moon"></p>
+<div class="sc"><table id="sade-sati"></table></div>
 <h2>Yogas and doshas</h2><div class="cards" id="yg"></div>
 <h2>Chart reading</h2><div class="cards" id="rd"></div>
 <h2>Basic AI reading</h2>
@@ -212,17 +216,69 @@ if(k=="Ju")L+=-.332*sn(2*Mj-5*Mt-67.6)-.056*sn(2*Mj-2*Mt+21)+.042*sn(3*Mj-5*Mt+2
 if(k=="Sa")L+=.812*sn(2*Mj-5*Mt-67.6)-.229*Math.cos((2*Mj-4*Mt-2)*R)+.119*sn(Mj-2*Mt-3)+.046*sn(2*Mj-6*Mt-69)+.014*sn(Mj-3*Mt+32)}
 return nm(L)}
 const fmt=ms=>new Date(ms).toLocaleDateString("en-IN",{month:"short",year:"numeric",timeZone:"UTC"});
+const lahiri=jd=>23.85306+(jd-2451545)/36525*1.396971;
 function calc(y,mo,dd,H,Mi,tz,la,lg){
 const ms=Date.UTC(y,mo-1,dd,H,Mi)-tz*36e5,jd=ms/864e5+2440587.5,d=jd-2451543.5;
-const ay=23.85306+(jd-2451545)/36525*1.396971,eps=(23.4393-3.563e-7*d)*R;
+const ay=lahiri(jd),eps=(23.4393-3.563e-7*d)*R;
 const ramc=nm(280.46061837+360.98564736629*(jd-2451545)+lg)*R;
 const asc=nm(Math.atan2(Math.cos(ramc),-(Math.sin(ramc)*Math.cos(eps)+Math.tan(la*R)*Math.sin(eps)))/R-ay);
 const g={};PK.forEach(k=>{const l=nm(lon(k,d)-ay);let rt=false;if(k=="Ra"||k=="Ke")rt=true;else if(k!="Su"&&k!="Mo")rt=((lon(k,d+.5)-lon(k,d-.5)+540)%360)-180<0;
 g[k]={l,s:Math.floor(l/30),rt}});
 g.As={l:asc,s:Math.floor(asc/30)};
 const ls=g.As.s;Object.values(g).forEach(p=>{p.h=(p.s-ls+12)%12+1;p.nk=Math.floor(p.l/(40/3));p.pd=Math.floor((p.l%(40/3))/(10/3))+1;p.n9=Math.floor(p.l/(10/3))%12});
-return{g,ms,ay,ls}}
+return{g,ms,ay,ls,tz}}
 const YRM=365.25*864e5,fmtD=ms=>new Date(ms).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
+function sadeSatiPeriods(chart) {
+  const moonSign = chart.g.Mo.s;
+  const offset = chart.tz * 36e5;
+  const anniversary = new Date(chart.ms + offset);
+  const birthMonth = anniversary.getUTCMonth();
+  anniversary.setUTCFullYear(anniversary.getUTCFullYear() + 100);
+  if (anniversary.getUTCMonth() !== birthMonth) anniversary.setUTCDate(0);
+  const limit = anniversary.getTime() - offset;
+
+  const phaseAt = ms => {
+    const jd = ms / 864e5 + 2440587.5;
+    const sign = Math.floor(nm(lon("Sa", jd - 2451543.5) - lahiri(jd)) / 30);
+    return (sign - moonSign + 13) % 12;
+  };
+
+  const periods = [];
+  let start = chart.ms;
+  let left = start;
+  let phase = phaseAt(start);
+  const step = 6 * 36e5;
+  while (left < limit) {
+    const right = Math.min(left + step, limit);
+    const next = phaseAt(right);
+    if (next !== phase) {
+      let lo = left, hi = right;
+      while (hi - lo > 60000) {
+        const mid = (lo + hi) / 2;
+        if (phaseAt(mid) === phase) lo = mid;
+        else hi = mid;
+      }
+      if (phase < 3) periods.push({phase, start, end: hi});
+      start = hi;
+      phase = next;
+    }
+    left = right;
+  }
+  if (phase < 3 && start < limit) periods.push({phase, start, end: limit});
+  return periods;
+}
+function renderSadeSati(chart) {
+  const now = Date.now();
+  const phases = ["Phase 1 · Rising", "Phase 2 · Peak", "Phase 3 · Setting"];
+  const rows = sadeSatiPeriods(chart).map(({phase,start,end}) => {
+    const current = start <= now && now < end;
+    const sign = SG[(chart.g.Mo.s + phase + 11) % 12];
+    return `<tr class="${current ? "cur" : ""}"><td>${phases[phase]}</td><td>${sign}</td><td>${fmtD(start)}</td><td>${fmtD(end)}</td><td>${current ? "Active" : end <= now ? "Past" : "Upcoming"}</td></tr>`;
+  });
+  $("sade-moon").textContent = "Birth Moon sign: " + SG[chart.g.Mo.s];
+  $("sade-sati").innerHTML = '<thead><tr><th scope="col">Phase</th><th scope="col">Saturn sign</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Status</th></tr></thead><tbody>' +
+    (rows.join("") || '<tr><td colspan="5">No Sade Sati periods in this window.</td></tr>') + '</tbody>';
+}
 function anta(x){let t=x.a,st=DL.indexOf(x.k);const o=[];for(let j=0;j<9;j++){const k=(st+j)%9,e=t+x.y*DY[k]/120*YRM;o.push({k:DL[k],a:t,b:e});t=e}return o}
 function dasha(c){const m=c.g.Mo.l,nk=Math.floor(m/(40/3)),fr=(m%(40/3))/(40/3),YR=365.25*864e5;
 let i=nk%9,t=c.ms-fr*DY[i]*YR;const L=[];for(let j=0;j<9;j++){const k=(i+j)%9,e=t+DY[k]*YR;L.push({k:DL[k],y:DY[k],a:t,b:e});t=e}
@@ -320,6 +376,7 @@ const D=dasha(c);
 $("ds").innerHTML="<tr><th>Mahadasha<th>From<th>To</tr>"+D.L.map((x,i)=>{const cu=x===D.cur,now=Date.now(),sub=anta(x).map(a=>`<tr class="${cu&&now>=a.a&&now<a.b?"cur":""}"><td>${PLN[x.k]} – ${PLN[a.k]}<td>${fmtD(a.a)}<td>${fmtD(a.b)}</tr>`).join("");
 return`<tr class="md${cu?" cur open":""}"><td><button type="button" class="tg" aria-expanded="${cu}" aria-controls="ad${i}"><span class="chev" aria-hidden="true">▸</span>${PN[x.k]} (${x.y} yrs)</button><td>${fmt(x.a)}<td>${fmt(x.b)}</tr><tr class="sub" id="ad${i}"${cu?"":" hidden"}><td colspan="3"><table class="in"><tr><th>Antardasha<th>From<th>To</tr>${sub}</table></td></tr>`}).join("");
 $("ad").textContent=D.cur?`Running now: ${PN[D.cur.k]} mahadasha${D.ant?` with ${PN[D.ant.k]} antardasha until ${fmt(D.ant.b)}`:""}. ${PN[D.cur.k]} stresses ${SIG[D.cur.k]}, shown through house ${g[D.cur.k].h} (${HT[g[D.cur.k].h-1]}).`:"The dasha sequence began before or extends past today’s window.";
+renderSadeSati(c);
 $("yg").innerHTML=yogas(c).map(([a,b])=>`<div class="c"><b>${a}</b><br>${b}</div>`).join("");
 $("rd").innerHTML=reading(c);$("out").style.display="block";
 c.aiChart=aiChartData(c,D);
@@ -381,6 +438,19 @@ $("aib").onclick=async()=>{
 };
 
 const telugu = {
+  "Shani Sade Sati": "ఏలినాటి శని",
+  "Approximate Saturn transit dates in UTC, from birth to age 100. Retrograde returns appear as separate rows.": "జననం నుంచి 100 ఏళ్ల వయస్సు వరకు శని గోచార అంచనా తేదీలు (UTC). వక్రగతిలో శని తిరిగి ప్రవేశించే కాలాలను వేర్వేరు వరుసల్లో చూపిస్తున్నాం.",
+  "Birth Moon sign": "జన్మ చంద్ర రాశి",
+  "Phase 1 · Rising": "మొదటి దశ · ప్రారంభం",
+  "Phase 2 · Peak": "రెండో దశ · మధ్య కాలం",
+  "Phase 3 · Setting": "మూడో దశ · ముగింపు",
+  "Saturn sign": "శని గోచార రాశి",
+  "Phase": "దశ",
+  "Active": "ప్రస్తుతం",
+  "Past": "గతం",
+  "Upcoming": "రాబోయేవి",
+  "No Sade Sati periods in this window.": "ఈ కాలపరిమితిలో ఏలినాటి శని దశలు లేవు.",
+
   "Basic AI reading": "ప్రాథమిక AI జాతక విశ్లేషణ",
   "Get a short overview based on your calculated chart.": "మీ జన్మకుండలి ఆధారంగా సంక్షిప్త విశ్లేషణ పొందండి.",
   "Get AI reading": "AI విశ్లేషణ పొందండి",
